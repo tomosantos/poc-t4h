@@ -1,0 +1,24 @@
+# Segredos / ambiente
+.env
+.env.local
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.ipynb_checkpoints/
+*.egg-info/
+.pytest_cache/
+
+# Saídas de experimento (regeneráveis)
+benchmark/results/
+*.log
+
+# SO / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
