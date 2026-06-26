@@ -17,6 +17,9 @@ env/
 benchmark/results/
 *.log
 
+# Material de referência pessoal (não versionar)
+example/
+
 # SO / editor
 .DS_Store
 Thumbs.db
