@@ -24,11 +24,12 @@ def montar_envelope(dados: dict, layout: Layout) -> dict:
     return {"status": "partial" if vazio else "ok", "extracted_data": limpo}
 
 
-def extrair(caminho: str, layout: Layout, modelo: str, client, modo: str = "single"):
+def extrair(caminho: str, layout: Layout, modelo: str, client, modo: str = "single",
+            **kwargs):
     if modo == "two_step":
-        resp = client.two_step(caminho, layout, modelo)
+        resp = client.two_step(caminho, layout, modelo, **kwargs)
     else:
-        resp = client.single_pass(caminho, layout, modelo)
+        resp = client.single_pass(caminho, layout, modelo, **kwargs)
     limpo = aplicar_validators(resp.dados, layout)
     envelope = montar_envelope(limpo, layout)
     return envelope, resp
