@@ -34,11 +34,13 @@ async def extract(layout_id: str = Form(...), file: UploadFile = File(...),
         raise HTTPException(400, f"layout_id desconhecido: {layout_id}")
     layout = DOCUMENTOS[layout_id]["layout"]
     sufixo = os.path.splitext(file.filename or "")[1] or ".bin"
-    with tempfile.NamedTemporaryFile(delete=False, suffix=sufixo) as tmp:
-        tmp.write(await file.read())
-        caminho = tmp.name
+    tmp = tempfile.NamedTemporaryFile(delete=False, suffix=sufixo)
+    caminho = tmp.name
     try:
+        tmp.write(await file.read())
+        tmp.close()
         envelope, _ = extrair(caminho, layout, MODELO_PADRAO, client, modo="single")
     finally:
+        tmp.close()  # no-op se já fechado
         os.unlink(caminho)
     return envelope

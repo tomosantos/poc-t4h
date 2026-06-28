@@ -24,3 +24,8 @@ def test_extract_cnh_retorna_envelope():
     assert body["status"] == "ok"
     assert body["extracted_data"]["nome"] == "Ana"
     assert "_raciocinio" not in body["extracted_data"]
+
+def test_layout_desconhecido_retorna_400():
+    r = cliente.post("/extract", data={"layout_id": "nao_existe"},
+                     files={"file": ("x.jpg", b"\xff\xd8\xff\xe0", "image/jpeg")})
+    assert r.status_code == 400
