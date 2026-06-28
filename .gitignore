@@ -13,8 +13,6 @@ env/
 *.egg-info/
 .pytest_cache/
 
-# Saídas de experimento (regeneráveis)
-benchmark/results/
 *.log
 
 # Material de referência pessoal (não versionar)
@@ -25,3 +23,6 @@ example/
 Thumbs.db
 .vscode/
 .idea/
+
+# Scratch do subagent-driven-development
+.superpowers/
