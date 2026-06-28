@@ -15,9 +15,9 @@ def test_validator_zera_cpf_invalido_e_remove_raciocinio():
     assert out["cpf"] is None
 
 def test_status_ok_e_partial():
-    assert montar_envelope({"nome": "Ana", "cpf": "x"}, LAYOUT)["status"] == "ok"
-    assert montar_envelope({"nome": "Ana", "cpf": None}, LAYOUT)["status"] == "partial"
-    assert montar_envelope({}, LAYOUT)["status"] == "error"
+    assert montar_envelope({"nome": "Ana", "cpf": "x"})["status"] == "ok"
+    assert montar_envelope({"nome": "Ana", "cpf": None})["status"] == "partial"
+    assert montar_envelope({})["status"] == "error"
 
 class _FakeClient:
     def single_pass(self, caminho, layout, modelo):

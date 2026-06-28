@@ -16,8 +16,8 @@ def aplicar_validators(dados: dict, layout: Layout) -> dict:
     return out
 
 
-def montar_envelope(dados: dict, layout: Layout) -> dict:
-    limpo = aplicar_validators(dados, layout) if "_raciocinio" in dados else dict(dados)
+def montar_envelope(dados: dict) -> dict:
+    limpo = {k: v for k, v in dados.items() if k != "_raciocinio"}
     if not limpo:
         return {"status": "error", "extracted_data": {}}
     vazio = any(v in (None, "") for v in limpo.values())
@@ -31,5 +31,5 @@ def extrair(caminho: str, layout: Layout, modelo: str, client, modo: str = "sing
     else:
         resp = client.single_pass(caminho, layout, modelo, **kwargs)
     limpo = aplicar_validators(resp.dados, layout)
-    envelope = montar_envelope(limpo, layout)
+    envelope = montar_envelope(limpo)
     return envelope, resp
