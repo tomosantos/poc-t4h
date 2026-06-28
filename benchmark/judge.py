@@ -32,6 +32,8 @@ def _schema_veredito(campos: list[str]) -> dict:
 
 def julgar(caminho: str, extracted_data: dict, client: OpenRouterClient,
            modelo_juiz: str = "openai/gpt-4o") -> dict:
+    if not extracted_data:
+        raise ValueError("extracted_data vazio: nada para julgar.")
     campos = list(extracted_data.keys())
     schema = _schema_veredito(campos)
     conteudo = [
@@ -49,4 +51,7 @@ def julgar(caminho: str, extracted_data: dict, client: OpenRouterClient,
             "name": "veredito", "strict": True, "schema": schema}},
         extra_body=extra,
     )
-    return json.loads(resp.choices[0].message.content)
+    conteudo = resp.choices[0].message.content
+    if not conteudo:
+        raise ValueError(f"Juiz retornou conteúdo vazio (modelo {modelo_juiz}).")
+    return json.loads(conteudo)
