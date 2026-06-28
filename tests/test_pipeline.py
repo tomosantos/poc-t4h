@@ -32,3 +32,19 @@ def test_extrair_aplica_validators_e_monta_envelope():
     assert env["extracted_data"]["cpf"] == "123.456.789-09"  # CPF válido mantido
     assert "_raciocinio" not in env["extracted_data"]
     assert resp.n_chamadas == 1
+
+
+class _FakeTwoStepClient:
+    def two_step(self, caminho, layout, modelo):
+        return RespostaLLM(dados={"_raciocinio": "x", "nome": "Bia",
+                                  "cpf": "123.456.789-09"},
+                           custo_usd=0.004, tokens_in=20, tokens_out=10,
+                           latencia_s=1.0, modelo=modelo, n_chamadas=2)
+
+
+def test_extrair_roteia_two_step():
+    env, resp = extrair("x.jpg", LAYOUT, "m", _FakeTwoStepClient(), modo="two_step")
+    assert resp.n_chamadas == 2
+    assert env["status"] == "ok"
+    assert env["extracted_data"]["nome"] == "Bia"
+    assert "_raciocinio" not in env["extracted_data"]

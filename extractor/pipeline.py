@@ -9,8 +9,9 @@ def aplicar_validators(dados: dict, layout: Layout) -> dict:
     out = {k: v for k, v in dados.items() if k != "_raciocinio"}
     for campo in layout.campos:
         if campo.validador and campo.nome in out:
+            fn = _VALIDADORES.get(campo.validador)
             valor = out[campo.nome]
-            if valor in (None, "") or not _VALIDADORES[campo.validador](str(valor)):
+            if fn and (valor in (None, "") or not fn(str(valor))):
                 out[campo.nome] = None
     return out
 
