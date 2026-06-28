@@ -1,0 +1,14 @@
+| doc | modelo | modo | status | n_chamadas | latencia_s | custo_usd | acuracia |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| cnh | google/gemini-2.5-flash-lite | single | partial | 1 | 2.867 | 0.0002927 | 0.3333333333333333 |
+| cnh | google/gemini-2.5-flash-lite | two_step | partial | 2 | 3.151 | 0.0003235 | 0.3333333333333333 |
+| cnh | openai/gpt-4o-mini | single | partial | 1 | 2.977 | 0.00223455 | 0.5 |
+| cnh | openai/gpt-4o-mini | two_step | partial | 2 | 4.09 | 0.00229095 | 0.8333 |
+| cnh | qwen/qwen2.5-vl-72b-instruct | single | partial | 1 | 9.502 | 0.00044 | 0.6666666666666666 |
+| cnh | qwen/qwen2.5-vl-72b-instruct | two_step | partial | 2 | 9.173 | 0.0006208 | 0.6666666666666666 |
+| fatura | google/gemini-2.5-flash-lite | single | ok | 1 | 2.819 | 0.0004378 | 0.857 |
+| fatura | google/gemini-2.5-flash-lite | two_step | ok | 2 | 5.057 | 0.0005805000000000001 | 0.857 |
+| fatura | openai/gpt-4o-mini | single | ok | 1 | 2.928 | 0.0073503 | 0.8333 |
+| fatura | openai/gpt-4o-mini | two_step | ok | 2 | 5.866 | 0.0074462999999999994 | 0.857 |
+| fatura | qwen/qwen2.5-vl-72b-instruct | single | ok | 1 | 6.014 | 0.0013546 | 0.857 |
+| fatura | qwen/qwen2.5-vl-72b-instruct | two_step | ok | 2 | 9.615 | 0.0016166000000000002 | 0.857 |
