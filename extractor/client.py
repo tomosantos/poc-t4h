@@ -52,10 +52,10 @@ def _usage_custo(resp) -> tuple[Optional[float], int, int]:
 class OpenRouterClient:
     def __init__(self, api_key: str | None = None,
                  base_url: str = "https://openrouter.ai/api/v1"):
-        self.client = OpenAI(
-            api_key=api_key or os.environ["OPENROUTER_API_KEY"],
-            base_url=base_url,
-        )
+        chave = api_key or os.environ.get("OPENROUTER_API_KEY")
+        if not chave:
+            raise ValueError("OPENROUTER_API_KEY não configurada (defina no .env ou passe api_key=).")
+        self.client = OpenAI(api_key=chave, base_url=base_url)
 
     def single_pass(self, caminho: str, layout: Layout, modelo: str) -> RespostaLLM:
         schema = construir_json_schema(layout)
@@ -75,7 +75,10 @@ class OpenRouterClient:
             extra_body=_extra_body(caminho),
         )
         latencia = time.perf_counter() - t0
-        dados = json.loads(resp.choices[0].message.content)
+        conteudo = resp.choices[0].message.content
+        if not conteudo:
+            raise ValueError(f"Resposta vazia ou recusada pelo modelo {modelo}.")
+        dados = json.loads(conteudo)
         custo, tin, tout = _usage_custo(resp)
         return RespostaLLM(dados=dados, custo_usd=custo, tokens_in=tin,
                            tokens_out=tout, latencia_s=latencia, modelo=modelo,
@@ -106,7 +109,10 @@ class OpenRouterClient:
             response_format={"type": "json_schema", "json_schema": {
                 "name": layout.layout_id, "strict": True, "schema": schema}})
         latencia = time.perf_counter() - t0
-        dados = json.loads(r2.choices[0].message.content)
+        conteudo = r2.choices[0].message.content
+        if not conteudo:
+            raise ValueError(f"Resposta vazia ou recusada pelo modelo {modelo}.")
+        dados = json.loads(conteudo)
         c1, i1, o1 = _usage_custo(r1)
         c2, i2, o2 = _usage_custo(r2)
         custo = None if c1 is None and c2 is None else (c1 or 0) + (c2 or 0)
