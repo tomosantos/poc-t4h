@@ -25,3 +25,6 @@ example/
 Thumbs.db
 .vscode/
 .idea/
+
+# Scratch do subagent-driven-development
+.superpowers/
