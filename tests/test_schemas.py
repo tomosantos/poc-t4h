@@ -24,3 +24,10 @@ def test_tipos_mapeados():
     s = construir_json_schema(_layout())
     assert s["properties"]["nome"]["type"] == "string"
     assert s["properties"]["data_nascimento"]["type"] == "string"
+
+def test_number_mapeia_para_number():
+    layout = Layout(layout_id="x", descricao="x", campos=[
+        FieldSpec(nome="valor", tipo="number", descricao="Valor total em reais"),
+    ])
+    s = construir_json_schema(layout)
+    assert s["properties"]["valor"]["type"] == "number"
