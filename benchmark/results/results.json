@@ -5,9 +5,10 @@
     "modo": "single",
     "status": "partial",
     "n_chamadas": 1,
-    "latencia_s": 2.867,
-    "custo_usd": 0.0002927,
-    "acuracia": 0.3333333333333333
+    "latencia_s": 2.613,
+    "custo_usd": 0.0002663,
+    "acuracia_juiz": 0.5,
+    "acuracia_det": 0.6666666666666666
   },
   {
     "doc": "cnh",
@@ -15,9 +16,10 @@
     "modo": "two_step",
     "status": "partial",
     "n_chamadas": 2,
-    "latencia_s": 3.151,
-    "custo_usd": 0.0003235,
-    "acuracia": 0.3333333333333333
+    "latencia_s": 4.136,
+    "custo_usd": 0.00038,
+    "acuracia_juiz": 0.5,
+    "acuracia_det": 0.6666666666666666
   },
   {
     "doc": "cnh",
@@ -25,9 +27,10 @@
     "modo": "single",
     "status": "partial",
     "n_chamadas": 1,
-    "latencia_s": 2.977,
-    "custo_usd": 0.00223455,
-    "acuracia": 0.5
+    "latencia_s": 2.992,
+    "custo_usd": 0.0022572,
+    "acuracia_juiz": 0.333,
+    "acuracia_det": 0.5
   },
   {
     "doc": "cnh",
@@ -35,9 +38,10 @@
     "modo": "two_step",
     "status": "partial",
     "n_chamadas": 2,
-    "latencia_s": 4.09,
-    "custo_usd": 0.00229095,
-    "acuracia": 0.8333
+    "latencia_s": 4.058,
+    "custo_usd": 0.0022842,
+    "acuracia_juiz": 0.5,
+    "acuracia_det": 0.5
   },
   {
     "doc": "cnh",
@@ -45,9 +49,10 @@
     "modo": "single",
     "status": "partial",
     "n_chamadas": 1,
-    "latencia_s": 9.502,
-    "custo_usd": 0.00044,
-    "acuracia": 0.6666666666666666
+    "latencia_s": 6.174,
+    "custo_usd": 0.000513,
+    "acuracia_juiz": 0.5,
+    "acuracia_det": 0.3333333333333333
   },
   {
     "doc": "cnh",
@@ -55,9 +60,10 @@
     "modo": "two_step",
     "status": "partial",
     "n_chamadas": 2,
-    "latencia_s": 9.173,
-    "custo_usd": 0.0006208,
-    "acuracia": 0.6666666666666666
+    "latencia_s": 10.541,
+    "custo_usd": 0.0007652,
+    "acuracia_juiz": 0.5,
+    "acuracia_det": 0.5
   },
   {
     "doc": "fatura",
@@ -65,9 +71,10 @@
     "modo": "single",
     "status": "ok",
     "n_chamadas": 1,
-    "latencia_s": 2.819,
-    "custo_usd": 0.0004378,
-    "acuracia": 0.857
+    "latencia_s": 3.335,
+    "custo_usd": 0.0004038,
+    "acuracia_juiz": 0.857,
+    "acuracia_det": null
   },
   {
     "doc": "fatura",
@@ -75,9 +82,10 @@
     "modo": "two_step",
     "status": "ok",
     "n_chamadas": 2,
-    "latencia_s": 5.057,
-    "custo_usd": 0.0005805000000000001,
-    "acuracia": 0.857
+    "latencia_s": 4.897,
+    "custo_usd": 0.0005913,
+    "acuracia_juiz": 0.8333333333333334,
+    "acuracia_det": null
   },
   {
     "doc": "fatura",
@@ -85,9 +93,10 @@
     "modo": "single",
     "status": "ok",
     "n_chamadas": 1,
-    "latencia_s": 2.928,
-    "custo_usd": 0.0073503,
-    "acuracia": 0.8333
+    "latencia_s": 3.07,
+    "custo_usd": 0.0073437,
+    "acuracia_juiz": 0.857,
+    "acuracia_det": null
   },
   {
     "doc": "fatura",
@@ -95,19 +104,21 @@
     "modo": "two_step",
     "status": "ok",
     "n_chamadas": 2,
-    "latencia_s": 5.866,
-    "custo_usd": 0.0074462999999999994,
-    "acuracia": 0.857
+    "latencia_s": 4.334,
+    "custo_usd": 0.00740835,
+    "acuracia_juiz": 0.857,
+    "acuracia_det": null
   },
   {
     "doc": "fatura",
     "modelo": "qwen/qwen2.5-vl-72b-instruct",
     "modo": "single",
-    "status": "ok",
+    "status": "partial",
     "n_chamadas": 1,
-    "latencia_s": 6.014,
-    "custo_usd": 0.0013546,
-    "acuracia": 0.857
+    "latencia_s": 6.793,
+    "custo_usd": 0.001308,
+    "acuracia_juiz": 0.571,
+    "acuracia_det": null
   },
   {
     "doc": "fatura",
@@ -115,8 +126,9 @@
     "modo": "two_step",
     "status": "ok",
     "n_chamadas": 2,
-    "latencia_s": 9.615,
-    "custo_usd": 0.0016166000000000002,
-    "acuracia": 0.857
+    "latencia_s": 8.392,
+    "custo_usd": 0.001563,
+    "acuracia_juiz": 0.86,
+    "acuracia_det": null
   }
 ]
