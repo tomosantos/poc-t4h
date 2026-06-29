@@ -2,12 +2,18 @@
 from extractor.models import FieldSpec, Layout
 
 LAYOUT_CNH = Layout(layout_id="cnh", descricao="CNH brasileira", campos=[
-    FieldSpec(nome="nome", tipo="text", descricao="Nome completo do condutor"),
-    FieldSpec(nome="cpf", tipo="text", descricao="CPF do condutor", validador="cpf"),
-    FieldSpec(nome="data_nascimento", tipo="date", descricao="Data de nascimento"),
-    FieldSpec(nome="data_emissao", tipo="date", descricao="Data de emissão do documento"),
-    FieldSpec(nome="filiacao_pai", tipo="text", descricao="Nome do pai (filiação)"),
-    FieldSpec(nome="filiacao_mae", tipo="text", descricao="Nome da mãe (filiação)"),
+    FieldSpec(nome="nome", tipo="text", descricao="Nome completo do condutor (campo NOME)"),
+    FieldSpec(nome="cpf", tipo="text",
+              descricao="Número de 11 dígitos rotulado 'CPF', formato 000.000.000-00",
+              validador="cpf"),
+    FieldSpec(nome="data_nascimento", tipo="date",
+              descricao="Data rotulada 'DATA NASCIMENTO' (a data de nascimento do condutor)"),
+    FieldSpec(nome="data_emissao", tipo="date",
+              descricao="A data no RODAPÉ rotulada 'DATA EMISSÃO' — NÃO use a 1ª habilitação nem a validade"),
+    FieldSpec(nome="filiacao_pai", tipo="text",
+              descricao="Nome do PAI listado sob 'FILIAÇÃO' — apenas o nome, sem prefixo"),
+    FieldSpec(nome="filiacao_mae", tipo="text",
+              descricao="Nome da MÃE listada sob 'FILIAÇÃO' — apenas o nome, sem prefixo"),
 ])
 
 LAYOUT_FATURA = Layout(layout_id="fatura", descricao="Fatura de energia CELPE", campos=[
@@ -41,6 +47,8 @@ GROUND_TRUTH_CNH = {
     "cpf": "091.340.611-75",
     "data_nascimento": "06/08/1961",
     "data_emissao": "22/10/2013",
-    "filiacao_pai": "Pai José da Silva",
-    "filiacao_mae": "Mãe Maria da Silva",
+    "filiacao_pai": "José da Silva",
+    "filiacao_mae": "Maria da Silva",
 }
+
+GROUND_TRUTH = {"cnh": GROUND_TRUTH_CNH}

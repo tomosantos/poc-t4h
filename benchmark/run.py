@@ -4,8 +4,9 @@ import json
 import os
 from dotenv import load_dotenv
 
-from benchmark.layouts import DOCUMENTOS
+from benchmark.layouts import DOCUMENTOS, GROUND_TRUTH
 from benchmark.judge import julgar
+from benchmark.metrics import acuracia_deterministica
 from extractor.client import OpenRouterClient
 from extractor.pipeline import extrair
 
@@ -16,7 +17,7 @@ MODELOS = [
 ]
 MODELO_JUIZ = "openai/gpt-4o"
 _COLUNAS = ["doc", "modelo", "modo", "status", "n_chamadas",
-            "latencia_s", "custo_usd", "acuracia"]
+            "latencia_s", "custo_usd", "acuracia_juiz", "acuracia_det"]
 
 # A matriz 2->1 roda só em documentos de CAMPO (CNH, fatura). O "documento
 # extenso" (paper) usa o caminho híbrido determinístico — ver benchmark/paper_hibrido.py.
@@ -32,12 +33,15 @@ _MAX_TOKENS: dict[str, int] = {
 }
 
 
-def linha_resultado(doc_key, modelo, modo, envelope, resp, acuracia) -> dict:
+def linha_resultado(doc_key, modelo, modo, envelope, resp, acuracia_juiz,
+                    acuracia_det=None) -> dict:
     return {
         "doc": doc_key, "modelo": modelo, "modo": modo,
         "status": envelope["status"], "n_chamadas": resp.n_chamadas,
         "latencia_s": round(resp.latencia_s, 3),
-        "custo_usd": resp.custo_usd, "acuracia": acuracia,
+        "custo_usd": resp.custo_usd,
+        "acuracia_juiz": acuracia_juiz,
+        "acuracia_det": acuracia_det,
     }
 
 
@@ -71,8 +75,14 @@ def main():
                                         cli, modo=modo, max_tokens=max_tok)
                     veredito = julgar(cfg["arquivo"], env["extracted_data"],
                                       cli, MODELO_JUIZ)
+                    if doc_key in GROUND_TRUTH:
+                        ac_det, _ = acuracia_deterministica(
+                            env["extracted_data"], GROUND_TRUTH[doc_key])
+                    else:
+                        ac_det = None
                     linhas.append(linha_resultado(doc_key, modelo, modo, env,
-                                                  resp, veredito["acuracia"]))
+                                                  resp, veredito["acuracia"],
+                                                  acuracia_det=ac_det))
                     print(f"ok: {doc_key}/{modelo}/{modo}")
                 except Exception as e:  # registra falha e segue a matriz
                     print(f"FALHA: {doc_key}/{modelo}/{modo}: {e}")

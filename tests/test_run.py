@@ -11,9 +11,20 @@ def test_linha_resultado_achata_campos():
     l = linha_resultado("cnh", "m", "single", env, _resp(), 0.83)
     assert l["doc"] == "cnh" and l["modo"] == "single"
     assert l["custo_usd"] == 0.002 and l["latencia_s"] == 1.5
-    assert l["n_chamadas"] == 1 and l["acuracia"] == 0.83 and l["status"] == "ok"
+    assert l["n_chamadas"] == 1 and l["acuracia_juiz"] == 0.83 and l["status"] == "ok"
+
+def test_linha_resultado_com_acuracia_det():
+    env = {"status": "ok", "extracted_data": {"a": "1"}}
+    l = linha_resultado("cnh", "m", "single", env, _resp(), 0.83, acuracia_det=0.67)
+    assert l["acuracia_det"] == 0.67
+
+def test_linha_resultado_acuracia_det_none_por_default():
+    env = {"status": "ok", "extracted_data": {}}
+    l = linha_resultado("fatura", "m", "single", env, _resp(), 0.90)
+    assert l["acuracia_det"] is None
 
 def test_tabela_markdown_tem_cabecalho_e_linha():
     md = tabela_markdown([linha_resultado("cnh", "m", "single",
         {"status": "ok", "extracted_data": {}}, _resp(), 0.83)])
     assert "| doc " in md and "cnh" in md
+    assert "acuracia_juiz" in md and "acuracia_det" in md
