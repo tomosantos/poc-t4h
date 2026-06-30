@@ -11,25 +11,34 @@ from extractor.client import OpenRouterClient
 from extractor.pipeline import extrair
 
 MODELOS = [
+    # Baseline (mid-tier 2024/2025)
     "google/gemini-2.5-flash-lite",
     "openai/gpt-4o-mini",
     "qwen/qwen2.5-vl-72b-instruct",
+    # Candidatos 2025/2026
+    "google/gemini-3.1-flash-lite",
+    "openai/gpt-5-mini",
+    "anthropic/claude-haiku-4.5",
+    "qwen/qwen3-vl-8b-instruct",
+    "qwen/qwen3-vl-32b-instruct",
+    "deepseek/deepseek-v4-flash",
 ]
 MODELO_JUIZ = "openai/gpt-4o"
 _COLUNAS = ["doc", "modelo", "modo", "status", "n_chamadas",
             "latencia_s", "custo_usd", "acuracia_juiz", "acuracia_det"]
 
-# A matriz 2->1 roda só em documentos de CAMPO (CNH, fatura). O "documento
-# extenso" (paper) usa o caminho híbrido determinístico — ver benchmark/paper_hibrido.py.
 DOCS_MATRIZ = ["cnh", "fatura"]
 
-# Free-tier token budget per model (avoids HTTP 402 on OpenRouter free tier).
-# Gemini/GPT-4o-mini default to 16384; Qwen defaults to 65536.
-# Budget ~3900 tokens each to stay within free tier credit ceiling.
 _MAX_TOKENS: dict[str, int] = {
-    "google/gemini-2.5-flash-lite": 3000,
-    "openai/gpt-4o-mini": 3000,
-    "qwen/qwen2.5-vl-72b-instruct": 3000,
+    "google/gemini-2.5-flash-lite":    3000,
+    "openai/gpt-4o-mini":              3000,
+    "qwen/qwen2.5-vl-72b-instruct":    3000,
+    "google/gemini-3.1-flash-lite":    4000,
+    "openai/gpt-5-mini":               4000,
+    "anthropic/claude-haiku-4.5":      4000,
+    "qwen/qwen3-vl-8b-instruct":       4000,
+    "qwen/qwen3-vl-32b-instruct":      4000,
+    "deepseek/deepseek-v4-flash":      4000,
 }
 
 
