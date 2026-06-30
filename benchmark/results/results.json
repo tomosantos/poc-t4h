@@ -306,5 +306,27 @@
     "custo_usd": 0.000263536,
     "acuracia_juiz": 0.857,
     "acuracia_det": null
+  },
+  {
+    "doc": "fatura",
+    "modelo": "anthropic/claude-haiku-4.5",
+    "modo": "single",
+    "status": "partial",
+    "n_chamadas": 1,
+    "latencia_s": 10.304,
+    "custo_usd": 0.003575,
+    "acuracia_juiz": 0.6666666666666666,
+    "acuracia_det": null
+  },
+  {
+    "doc": "fatura",
+    "modelo": "anthropic/claude-haiku-4.5",
+    "modo": "two_step",
+    "status": "partial",
+    "n_chamadas": 2,
+    "latencia_s": 7.109,
+    "custo_usd": 0.004111999999999999,
+    "acuracia_juiz": 0.857,
+    "acuracia_det": null
   }
 ]

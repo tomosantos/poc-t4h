@@ -21,7 +21,9 @@ MODELOS = [
     "anthropic/claude-haiku-4.5",
     "qwen/qwen3-vl-8b-instruct",
     "qwen/qwen3-vl-32b-instruct",
-    "deepseek/deepseek-v4-flash",
+    # deepseek/deepseek-v4-flash removido: OpenRouter retorna 404
+    # "No endpoints found that support image input" — modelo sem capacidade de visão
+    # Não substituído por outro DeepSeek para evitar IDs não verificados.
 ]
 MODELO_JUIZ = "openai/gpt-4o"
 _COLUNAS = ["doc", "modelo", "modo", "status", "n_chamadas",
@@ -38,7 +40,7 @@ _MAX_TOKENS: dict[str, int] = {
     "anthropic/claude-haiku-4.5":      4000,
     "qwen/qwen3-vl-8b-instruct":       4000,
     "qwen/qwen3-vl-32b-instruct":      4000,
-    "deepseek/deepseek-v4-flash":      4000,
+    # deepseek/deepseek-v4-flash removido (sem visão no OpenRouter)
 }
 
 
