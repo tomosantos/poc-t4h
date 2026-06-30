@@ -4,6 +4,7 @@ import json
 import math
 import os
 import tempfile
+from pathlib import Path
 
 import pandas as pd
 import streamlit as st
@@ -26,7 +27,7 @@ MODELOS_UI = [
     "qwen/qwen3-vl-32b-instruct",
 ]
 
-_RESULTS_PATH = "benchmark/results/results.json"
+_RESULTS_PATH = Path(__file__).parent.parent / "benchmark" / "results" / "results.json"
 
 st.set_page_config(page_title="POC Extração de Documentos", layout="wide")
 
@@ -48,7 +49,7 @@ if os.path.exists(_RESULTS_PATH):
     df = pd.DataFrame(dados)
     df_display = df.copy()
     df_display["custo_usd"] = df_display["custo_usd"].apply(
-        lambda x: f"${x:.5f}" if x is not None else "—"
+        lambda x: f"${x:.5f}" if pd.notna(x) else "—"
     )
     df_display["latencia_s"] = df_display["latencia_s"].apply(lambda x: f"{x:.1f}s")
     df_display.rename(columns={
@@ -106,8 +107,9 @@ with col2:
         "**CPF: gargalo de legibilidade intrínseca**\n\n"
         "Falha em **100% dos modelos e modos** no baseline. Upscaling 3× LANCZOS "
         "não ajudou (+153% custo, zero ganho). "
-        "Candidatos com OCR nativo superior (`qwen3-vl`, `deepseek-v4`) são "
-        "os próximos a testar."
+        "DeepSeek V4 Flash foi testado mas não tinha suporte a imagem no OpenRouter "
+        "à época da avaliação (`Error 404: No endpoints found that support image input`), "
+        "excluído da matriz final. Candidatos com OCR superior: `qwen3-vl-32b`."
     )
     st.success(
         "**Single-pass funciona para fatura e paper**\n\n"
