@@ -2,7 +2,7 @@
 
 A condução da pesquisa foi estruturada para garantir rastreabilidade entre cada afirmação do presente dossiê e as fontes que a fundamentam. Nessa perspectiva, adotou-se uma varredura paralela organizada em seis frentes de investigação, conduzidas de forma simultânea nos dias 26–27 de junho de 2026: (1) literatura acadêmica recente em *arXiv* e periódicos — privilegiando publicações de 2024–2026 sobre extração de documentos, *key-information extraction* (KIE) e *Vision-Language Models* (VLMs); (2) documentação oficial de APIs e SDKs dos principais provedores (Anthropic, Google, OpenAI); (3) repositórios de código e benchmarks públicos, com destaque para o OmniDocBench (CVPR 2025) e os leaderboards de DocVQA, ChartQA e FUNSD/CORD/SROIE; (4) análise técnica da API da Tech4.ai (`POST /document/extract`, *layout builder*, *validators* nativos); (5) experimentos empíricos diretos com os três documentos de teste via OpenRouter, executados em código Python reprodutível disponível no repositório; e (6) estudo de robustez específico na CNH de baixa resolução, com ablação sistemática de variáveis de entrada (resolução, formulação do *prompt*, porte do modelo). Os achados de cada frente foram registrados nas notas `notes/01` a `notes/11`, que constituem a base documental primária do dossiê e são citadas ao longo das seções seguintes como evidência de profundidade da investigação.
 
-### 2.1 ABORDAGENS DESCARTADAS RAPIDAMENTE
+### 2.1 Abordagens Descartadas Rapidamente
 
 Durante a fase de varredura, um conjunto de abordagens foi identificado e descartado antes da fase experimental, por razões técnicas ou econômicas que os tornam inviáveis no contexto do presente estudo. Registra-se a seguir a lista ordenada com as justificativas:
 
@@ -14,11 +14,11 @@ Durante a fase de varredura, um conjunto de abordagens foi identificado e descar
 
 4. **Abordagem ingênua de PDF longo via VLM (*single large-file input*):** o envio do documento completo de 42 páginas e 28 MB ao VLM via API falhou após aproximadamente 615 segundos, com erro do provedor (`choices=None`), ao custo de US$ 0 — isto é, sem qualquer retorno útil. Essa abordagem foi descartada como estratégia principal para documentos extensos, dando lugar à abordagem híbrida descrita na Seção 3.
 
-### 2.2 USO DE FERRAMENTAS DE INTELIGÊNCIA ARTIFICIAL
+### 2.2 Uso de Ferramentas de Inteligência Artificial
 
 Em conformidade com os princípios de transparência científica, declara-se que a presente pesquisa contou com o apoio do *Claude Code* (modelo Opus) como copiloto computacional. Esse suporte compreendeu: varredura paralela de literatura e documentações técnicas, geração e depuração do código da POC (scripts Python, configuração do OpenRouter, definição do *benchmark*), e organização estruturada dos achados nas notas de pesquisa. A curadoria crítica das fontes, o desenho experimental (seleção de documentos, definição do *framework* de métricas, escolha de variáveis de ablação), a interpretação dos resultados e as conclusões do presente dossiê são de autoria integral do pesquisador. Toda afirmação empírica é rastreável aos resultados em `benchmark/results/` e às notas de pesquisa citadas, e pode ser reproduzida a partir do código disponível no repositório.
 
-### 2.3 FRAMEWORK DE MÉTRICAS
+### 2.3 *Framework* de Métricas
 
 A avaliação quantitativa do POC adotou uma métrica dupla, motivada pela constatação experimental de que a *LLM-as-judge* sozinha não é confiável em documentos de baixa resolução. As duas métricas são definidas e justificadas a seguir.
 

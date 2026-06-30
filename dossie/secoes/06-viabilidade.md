@@ -47,7 +47,7 @@ Nessa perspectiva, o aspecto de maior valor estratégico da abordagem proposta �
 
 4. **Compatibilidade de transporte:** o endpoint `POST https://api.tech4.ai/document/extract/`, o *header* de autenticação, os parâmetros `file_url` e `layout_id`, e os códigos HTTP (400, 401, 404) permanecem inalterados. A mudança de 2 LLMs para 1 VLM *single-pass* é totalmente interna, invisível para o cliente que consome a API.
 
-Assim, o ganho operacional — eliminação de uma chamada de inferência, redução de latência de 32–46% e redução de custo proporcional (seção 4) — é obtido sem nenhuma quebra de contrato e sem impacto para as integrações já existentes dos clientes da plataforma.
+Assim, o ganho operacional — eliminação de uma chamada de inferência, redução de latência de ≈32% e redução de custo proporcional (seção 4) — é obtido sem nenhuma quebra de contrato e sem impacto para as integrações já existentes dos clientes da plataforma.
 
 ### 6.4 LGPD e Residência de Dados
 

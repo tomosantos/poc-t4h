@@ -1,4 +1,4 @@
-## 4. RESULTADOS E EXPERIMENTOS
+## 4. Resultados e Experimentos
 
 ### 4.1 Configuração da Prova de Conceito
 
@@ -29,21 +29,21 @@ Tabela 2 - Matriz de resultados da POC (CNH e Fatura CELPE; via OpenRouter, junh
 
 Fonte: elaboração própria. Custos em US$ por documento. Acurácia (det.) = *exact-match* normalizado vs. *ground truth*; N/A indica ausência de *ground truth* determinístico para o documento.
 
-Observa-se que, em **nenhuma célula** da matriz o modo *two_step* superou o *single-pass* em custo ou latência. No caso mais expressivo — Fatura CELPE com *gemini-2.5-flash-lite* —, o *single-pass* produz 3,34 s e US$0,00040, ao passo que o *two_step* consome 4,90 s e US$0,00059, representando redução de aproximadamente 32% em ambas as dimensões com acurácia de juiz superior (0,857 vs. 0,833). Para a CNH com o mesmo modelo, o *single-pass* responde em 2,61 s (vs. 4,14 s), com custo 29% inferior, e acurácia determinística idêntica (0,667). A Figura 3 condensa visualmente essa comparação de latência e custo por modo de execução para todos os modelos.
-
-Figura 3 - Comparação single-pass vs. two\_step: latência (s) e custo (US$) por modelo
-
-![Figura 3 - Comparação single-pass vs. two_step: latência (s) e custo (US$) por modelo](../figuras/figura3_2para1.png)
-
-Fonte: elaboração própria. Dados de CNH + Fatura CELPE agregados.
-
-Nesse contexto, emerge um achado crítico relacionado à escolha do modelo: o *gpt-4o-mini* custa entre 10× e 18× mais que o *gemini-2.5-flash-lite* sem ganho correspondente de acurácia. Na Fatura CELPE em modo *single-pass*, o custo é US$0,00734 vs. US$0,00040 — razão de 18× — com acurácia de juiz idêntica (0,857). Esse resultado evidencia que a escolha do provedor correto na classe de modelos pequenos tem impacto de custo dominante; selecionar "qualquer modelo pequeno" não é equivalente. A Figura 2 exibe o *trade-off* latência × custo por modelo e modo, permitindo visualizar a fronteira de eficiência de cada configuração.
+Observa-se que, em **nenhuma célula** da matriz o modo *two_step* superou o *single-pass* em custo ou latência. No caso mais expressivo — Fatura CELPE com *gemini-2.5-flash-lite* —, o *single-pass* produz 3,34 s e US$0,00040, ao passo que o *two_step* consome 4,90 s e US$0,00059, representando redução de aproximadamente 32% em ambas as dimensões com acurácia de juiz superior (0,857 vs. 0,833). Para a CNH com o mesmo modelo, o *single-pass* responde em 2,61 s (vs. 4,14 s), com custo 29% inferior, e acurácia determinística idêntica (0,667). A Figura 2 exibe o *trade-off* latência × custo por modelo e modo, permitindo visualizar a fronteira de eficiência de cada configuração.
 
 Figura 2 - Trade-off latência × custo por modelo e modo de execução
 
 ![Figura 2 - Trade-off latência × custo por modelo e modo de execução](../figuras/figura2_tradeoff.png)
 
 Fonte: elaboração própria. Cada ponto representa uma célula (modelo × modo × documento) da matriz experimental.
+
+Nesse contexto, emerge um achado crítico relacionado à escolha do modelo: o *gpt-4o-mini* custa entre 10× e 18× mais que o *gemini-2.5-flash-lite* sem ganho correspondente de acurácia. Na Fatura CELPE em modo *single-pass*, o custo é US$0,00734 vs. US$0,00040 — razão de 18× — com acurácia de juiz idêntica (0,857). Esse resultado evidencia que a escolha do provedor correto na classe de modelos pequenos tem impacto de custo dominante; selecionar "qualquer modelo pequeno" não é equivalente. A Figura 3 condensa visualmente essa comparação de latência e custo por modo de execução para todos os modelos.
+
+Figura 3 - Comparação single-pass vs. two\_step: latência (s) e custo (US$) por modelo
+
+![Figura 3 - Comparação single-pass vs. two_step: latência (s) e custo (US$) por modelo](../figuras/figura3_2para1.png)
+
+Fonte: elaboração própria. Dados de CNH + Fatura CELPE agregados.
 
 ### 4.3 Documento Extenso: Abordagem Híbrida vs. Ingestão Ingênua
 
@@ -73,7 +73,7 @@ O CPF permanece irrecuperável em todos os quatro runs da ablação (com e sem a
 
 ### 4.5 Confiabilidade da Avaliação: O Juiz Não-Calibrado
 
-O diagnóstico de acurácia na CNH revelou uma limitação metodológica relevante: o *LLM-as-judge* (`gpt-4o`) diverge sistematicamente da métrica determinística em cenários de baixa resolução, com gap de até ±0,17 (em escala 0–1). O caso mais extremo ocorre na extração do *gpt-4o-mini* sobre a CNH: o juiz atribuiu `acuracia_juiz = 0,83`, enquanto a acurácia determinística real era 0,17 — diferença de 0,66 pontos. O juiz aprovou campos com datas e nomes incorretos porque a própria imagem de baixa resolução dificulta a verificação visual pelo modelo avaliador; o juiz tende a ser leniente quando não consegue confirmar o valor correto.
+O diagnóstico de acurácia na CNH revelou uma limitação metodológica relevante: o *LLM-as-judge* (`gpt-4o`) diverge sistematicamente da métrica determinística em cenários de baixa resolução, com gap de até ±0,17 (em escala 0–1), ora superestimando ora subestimando a acurácia real. O juiz aprovou campos com datas e nomes incorretos porque a própria imagem de baixa resolução dificulta a verificação visual pelo modelo avaliador; o juiz tende a ser leniente quando não consegue confirmar o valor correto no documento original.
 
 Dessa forma, o relato das duas métricas em paralelo não é redundante: é **indispensável** para honestidade do experimento. A `acuracia_det` fornece âncora objetiva onde há *ground truth* disponível; a `acuracia_juiz` é útil em documentos sem anotação determinística (como a Fatura CELPE), mas deve ser tratada com reserva em condições de baixa resolução. Essa constatação reforça a recomendação de anotação de *ground truth* para documentos-alvo críticos e de validação de campos via regras determinísticas (CPF, CNPJ, linhas digitáveis) como pós-processamento obrigatório, independentemente do modelo de avaliação adotado.
 

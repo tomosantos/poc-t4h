@@ -7,16 +7,14 @@ PANDOC="C:/Users/welli/anaconda3/Lib/site-packages/pypandoc/files/pandoc.exe"
 OUT="Dossie-Wellinton-Oliveira-Santos.pdf"
 
 # Ordem das seções
-cat \
-  secoes/00-frontmatter.md \
-  secoes/01-introducao.md \
-  secoes/02-metodologia.md \
-  secoes/03-tecnicas.md \
-  secoes/04-resultados.md \
-  secoes/05-conclusao.md \
-  secoes/06-viabilidade.md \
-  secoes/07-referencias.md \
-  > dossie.md
+# Concatena com linha em branco entre cada seção (markdown exige blank line
+# antes de um heading; senão o sumário/TOC fica inconsistente).
+> dossie.md
+for sec in 00-frontmatter 01-introducao 02-metodologia 03-tecnicas \
+           04-resultados 05-conclusao 06-viabilidade 07-referencias; do
+  cat "secoes/$sec.md" >> dossie.md
+  printf '\n\n' >> dossie.md
+done
 
 # As figuras foram referenciadas como ../figuras/ (relativo a secoes/); como o
 # dossie.md montado fica em dossie/, normaliza para figuras/ (cwd = dossie/).

@@ -1,4 +1,4 @@
-# 1. Introdução
+## 1. Introdução
 
 A extração automatizada de dados a partir de documentos heterogêneos — formulários, faturas, identidades e relatórios técnicos — representa uma necessidade crescente em organizações que buscam digitalizar fluxos de trabalho intensivos em papel. Nesse contexto, soluções baseadas em modelos de linguagem de grande escala emergiram como alternativa viável aos sistemas de *Optical Character Recognition* (OCR) clássico, por sua capacidade de interpretar contexto semântico, estruturas não lineares e conteúdo visual sem a necessidade de templates predefinidos por região de documento (Borchmann et al., 2021; Huang et al., 2022). A proliferação dessas soluções em ambiente de produção, no entanto, expõe limitações operacionais que tornam a investigação de arquiteturas alternativas tecnicamente relevante e economicamente justificada.
 
