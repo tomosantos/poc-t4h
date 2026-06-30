@@ -24,7 +24,6 @@ MODELOS_UI = [
     "anthropic/claude-haiku-4.5",
     "qwen/qwen3-vl-8b-instruct",
     "qwen/qwen3-vl-32b-instruct",
-    "deepseek/deepseek-v4-flash",
 ]
 
 _RESULTS_PATH = "benchmark/results/results.json"
@@ -60,7 +59,7 @@ if os.path.exists(_RESULTS_PATH):
     }, inplace=True)
 
     def _cor_ac(val):
-        if not isinstance(val, float):
+        if not isinstance(val, float) or math.isnan(val):
             return ""
         if val >= 0.7:
             return "background-color: #d4edda"
