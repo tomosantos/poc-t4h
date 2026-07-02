@@ -226,9 +226,14 @@ if arquivo and st.button("Extrair", type="primary"):
 
     with col_res:
         st.subheader("Resultado")
-        with st.spinner("Extraindo..."):
+        modo = "hybrid" if sufixo.lower() == ".pdf" else "single"
+        texto_spinner = (
+            "Extraindo (PDF: leitura determinística + até 3 chamadas de figura "
+            "+ formatação final — pode levar 30-90s)..."
+            if modo == "hybrid" else "Extraindo..."
+        )
+        with st.spinner(texto_spinner):
             try:
-                modo = "hybrid" if sufixo.lower() == ".pdf" else "single"
                 envelope, resp = extrair(
                     caminho, DOCUMENTOS[layout_id]["layout"],
                     modelo, OpenRouterClient(), modo=modo,

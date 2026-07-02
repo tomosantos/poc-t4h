@@ -81,11 +81,14 @@ def _conteudo(resp, modelo: str) -> str:
 class OpenRouterClient:
     def __init__(self, api_key: str | None = None,
                  base_url: str = "https://openrouter.ai/api/v1",
-                 timeout: float = 120.0):
+                 timeout: float = 45.0):
         chave = api_key or os.environ.get("OPENROUTER_API_KEY")
         if not chave:
             raise ValueError("OPENROUTER_API_KEY não configurada (defina no .env ou passe api_key=).")
-        # timeout evita que uma chamada (ex.: PDF gigante) trave indefinidamente.
+        # timeout evita que uma chamada trave indefinidamente — importante no
+        # modo hybrid, que faz até 5 chamadas sequenciais (3 figuras + até 2
+        # tentativas da chamada final); com 120s isso podia levar até 10min
+        # no pior caso e parecer "travado" na UI.
         self.client = OpenAI(api_key=chave, base_url=base_url, timeout=timeout)
 
     def single_pass(self, caminho: str, layout: Layout, modelo: str,
@@ -173,7 +176,9 @@ class OpenRouterClient:
         tin_total = tout_total = 0
 
         md = extrair_markdown(caminho, max_paginas=max_paginas_texto)
+        n_figuras = 0
         for indice in paginas_com_imagem(caminho, max_paginas=max_figuras):
+            n_figuras += 1
             png = renderizar_pagina(caminho, indice)
             data_url = "data:image/png;base64," + base64.b64encode(png).decode("ascii")
             msgs = [{"role": "user", "content": [
@@ -194,45 +199,36 @@ class OpenRouterClient:
             tout_total += to
             md += f"\n\n## Figura (página {indice + 1})\n{desc}"
 
-        schema = construir_json_schema(layout)
-
-        def _chamar_final(palavras: int, tokens: int, conteudo_md: str):
-            msg_final = [
-                {"role": "system", "content": _PROMPT_EXTRACAO},
-                {"role": "user", "content": f"Layout: {layout.descricao}. Extraia os campos "
-                                             f"a partir do conteúdo abaixo (já extraído "
-                                             f"deterministicamente do PDF). Para campos de "
-                                             f"texto longo, RESUMA em no máximo {palavras} "
-                                             f"palavras, preservando tabelas e números-chave "
-                                             f"— não copie o conteúdo integralmente palavra "
-                                             f"por palavra.\n\n{conteudo_md}"},
-            ]
-            return self.client.chat.completions.create(
-                model=modelo, messages=msg_final, max_tokens=tokens,
-                response_format={"type": "json_schema", "json_schema": {
-                    "name": layout.layout_id, "strict": True, "schema": schema}})
-
-        # Achado ao vivo: com instrução vaga ("condense") o modelo tentava
-        # reproduzir o markdown quase inteiro (chegou a gerar 19k+ chars antes
-        # de bater o teto), cortando a string JSON no meio (finish_reason=
-        # "length"). Um limite numérico explícito (400 palavras) é seguido de
-        # forma muito mais confiável do que uma instrução vaga — mas alguns
-        # modelos (ex.: qwen3-vl) ainda ignoram o cap às vezes, daí o retry
-        # com instrução mais curta e input reduzido.
-        resp = _chamar_final(400, max_tokens or 2000, md)
+        # Achado ao vivo: pedir pro modelo reproduzir/resumir o texto longo via
+        # structured output (json_schema) é pouco confiável — mesmo com um cap
+        # explícito de palavras e um retry, vários modelos (incluindo o padrão
+        # da UI) às vezes ignoram o cap e geram uma string tão longa que corta
+        # no meio do JSON ("Unterminated string"), de forma não-determinística
+        # (funciona numa chamada, falha na próxima com o mesmo input). Fix
+        # definitivo: campos de texto longo ficam 100% determinísticos (já
+        # temos `md`); o LLM só extrai o título — curto, praticamente
+        # impossível de truncar.
+        msg_titulo = [{"role": "user", "content": f"Qual é o título deste documento? "
+                                                   f"Responda APENAS o título, sem mais "
+                                                   f"nada.\n\n{md[:3000]}"}]
+        resp = self.client.chat.completions.create(
+            model=modelo, messages=msg_titulo, max_tokens=100,
+            extra_body={"usage": {"include": True}})
         n_chamadas += 1
-        try:
-            dados = json.loads(_conteudo(resp, modelo))
-        except json.JSONDecodeError:
-            resp = _chamar_final(150, max_tokens or 1200, md[: len(md) // 2])
-            n_chamadas += 1
-            dados = json.loads(_conteudo(resp, modelo))
-        latencia = time.perf_counter() - t0
+        titulo = _conteudo(resp, modelo).strip().strip('"').strip()
         c, ti, to = _usage_custo(resp)
         if c is not None:
             custos.append(c)
         tin_total += ti
         tout_total += to
+
+        dados = {"_raciocinio": f"Extração híbrida: texto/tabelas via PyMuPDF "
+                                 f"determinístico, {n_figuras} figura(s) interpretada(s) "
+                                 f"via VLM."}
+        for campo in layout.campos:
+            dados[campo.nome] = titulo if "titulo" in campo.nome.lower() else md
+
+        latencia = time.perf_counter() - t0
         custo_total = sum(custos) if custos else None
         return RespostaLLM(dados=dados, custo_usd=custo_total, tokens_in=tin_total,
                            tokens_out=tout_total, latencia_s=latencia, modelo=modelo,
