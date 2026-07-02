@@ -12,7 +12,7 @@
 2. **O OCR separado deixou de ser necessário em docs estruturados:** VLMs SOTA marcam DocVQA na faixa de **92-96%** e OCRBench >850/1000, igualando ou superando pipelines OCR+LLM em texto impresso. `[VERIF]`
 3. **VLMs leem gráficos e tabelas melhor que OCR+LLM** porque interpretam o layout visual nativamente. ChartQA fica em **85-89%** nos modelos fortes — um pipeline OCR perde a estrutura visual do gráfico/eixos antes do LLM ver. `[VERIF parcial]`
 4. **Modelos pequenos chegam muito perto dos grandes em docs estruturados.** Qwen2.5-VL-**7B** marca DocVQA **95.7** vs **96.4** do 72B (gap de 0.7 pt); ChartQA 87.3 vs 89.5 (gap ~2 pt). Para CNH/fatura, o 7B é praticamente equivalente ao 72B. `[VERIF]`
-5. **O trade-off favorece os "Flash/mini/7B".** Gemini 2.0 Flash (~US$0,10-0,40/1M) e GPT-4o-mini (US$0,15/4,80) custam ~10-20x menos que GPT-4o, com latência sub-segundo a poucos segundos por página. **Recomendação:** modelo pequeno/Flash para CNH+fatura; reservar modelo grande (ou validação) só para o paper com gráficos densos. `[VERIF/INFER]`
+5. **O trade-off favorece os "Flash/mini/7B".** Gemini 2.0 Flash (~US$0,10-0,40/1M) e GPT-4o-mini (US$0,15/0,80) custam ~10-20x menos que GPT-4o, com latência sub-segundo a poucos segundos por página. **Recomendação:** modelo pequeno/Flash para CNH+fatura; reservar modelo grande (ou validação) só para o paper com gráficos densos. `[VERIF/INFER]`
 
 ---
 

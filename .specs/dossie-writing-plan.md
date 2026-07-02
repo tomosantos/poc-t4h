@@ -1,7 +1,7 @@
 # Plano de Escrita — Dossiê de Pesquisa (Entregável 1, 80%)
 
 **Objetivo:** produzir um documento técnico-científico em PDF (~15-18 páginas), em PT-BR,
-seguindo a voz do TCP de referência (`notes/11-estilo-tcp.md`), cobrindo as 6 seções
+seguindo a voz do TCP de referência (`docs/estilo-tcp.md`), cobrindo as 6 seções
 obrigatórias do desafio, fundamentado nas 11 notas de pesquisa e nos resultados empíricos
 da POC (`benchmark/results/`).
 
@@ -12,7 +12,7 @@ Fallback se TinyTeX falhar no Windows: `pandoc` → DOCX (o autor exporta a PDF)
 
 ---
 
-## Regras de Estilo (de `notes/11-estilo-tcp.md`) — vinculantes para todo redator
+## Regras de Estilo (de `docs/estilo-tcp.md`) — vinculantes para todo redator
 
 1. **Voz:** impessoal, 3ª pessoa ("o presente estudo…", "observa-se que…"). Nunca 1ª pessoa.
    Alta formalidade, sem coloquialismos.
@@ -49,19 +49,19 @@ Cada seção abaixo é uma unidade de redação (um subagente por seção, com e
   `{status, extracted_data}`, *layout builder*) e seu *pipeline* de 2 inferências; as 4 dores
   (latência, custo, complexidade de layout, leitura fraca de gráficos); objetivo: abordagem que
   reduza latência/custo mantendo/aumentando acurácia. Encerrar com **parágrafo-roteiro**.
-- **Fontes:** design §1, `notes/06` (Tech4.ai).
+- **Fontes:** design §1, `docs/06` (Tech4.ai).
 - **Visuais:** nenhum (ou Figura 1 da arquitetura, se preferir abrir aqui).
 
 ### 2. Metodologia  (~2 pp)
 - **Objetivo:** descrever como a pesquisa foi conduzida (rigor + reprodutibilidade).
 - **Conteúdo:** (1) varredura paralela de literatura/repositórios/docs (6 frentes →
-  `notes/01-07`); (2) abordagens consideradas e **descartadas rapidamente** e por quê
+  `docs/01-07`); (2) abordagens consideradas e **descartadas rapidamente** e por quê
   (ex.: treinar modelo do zero; OCR clássico puro sem layout; modelos que exigem cluster de GPU);
   (3) **Uso de Ferramentas de IA** — declarar honestamente o uso do *Claude Code* (Opus) como
   copiloto de pesquisa, geração de POC e análise, mantendo a análise crítica e as conclusões como
   autorais; (4) **framework de métricas**: Field-F1/exact-match determinístico vs. *ground truth*
   E *LLM-as-judge* (com a ressalva de não-calibração), latência/página, custo/documento.
-- **Fontes:** design §2/§4, `notes/01`, `notes/08` (não-calibração do juiz).
+- **Fontes:** design §2/§4, `docs/01`, `docs/08` (não-calibração do juiz).
 - **Visuais:** nenhum.
 
 ### 3. Técnicas e Modelos Avaliados  (~3 pp)
@@ -73,8 +73,8 @@ Cada seção abaixo é uma unidade de redação (um subagente por seção, com e
   - **C. Document AI gerenciado** (Azure/Google Layout) + LLM pequeno: conservador, robusto.
   - **D. Híbrido para documento extenso** (PyMuPDF determinístico + VLM só na figura).
   Discutir *trade-offs* de cada um (acurácia × custo × latência × infra × manutenção).
-- **Fontes:** `notes/02` (structured output), `notes/03` (VLMs), `notes/04` (especializados/OCR-free),
-  `notes/05` (Document AI), design §3.
+- **Fontes:** `docs/02` (structured output), `docs/03` (VLMs), `docs/04` (especializados/OCR-free),
+  `docs/05` (Document AI), design §3.
 - **Visuais:** **Tabela 1** — comparativo das técnicas (colunas: técnica, ataca quais dores, infra,
   custo relativo, maturidade, risco).
 
@@ -89,12 +89,12 @@ Cada seção abaixo é uma unidade de redação (um subagente por seção, com e
      (615s → erro do provedor); híbrido extrai 42p em ~5s a custo zero + VLM só na figura.
   4. **Documento estruturado (CNH) — estudo de robustez:** baixa-res (341×600); *upscaling* não
      ajuda; prompt ancorado recupera campo de graça; escalar modelo (~57× custo) não recupera
-     campos extras; CPF irrecuperável → ablação (`notes/09`, `notes/10`).
-  5. **Confiabilidade da avaliação:** juiz LLM **não-calibrado** em baixa-res (gap ±0,17) →
-     justifica a métrica determinística dupla (`notes/08`).
+     campos extras; CPF irrecuperável → ablação (`docs/09`, `docs/10`).
+  5. **Confiabilidade da avaliação:** juiz LLM **não-calibrado** em baixa-res (gap 0,34–0,66) →
+     justifica a métrica determinística dupla (`docs/08`).
   6. **Fundamentação por benchmarks de terceiros:** DocVQA, ChartQA, OmniDocBench, CORD/FUNSD
-     (números de `notes/01`, `notes/03`, `notes/04`) — para o que não foi testado localmente.
-- **Fontes:** design §4/§11, `notes/01,03,04,08,09,10`, `benchmark/results/{tabela.md,results.json,paper_hibrido.md}`.
+     (números de `docs/01`, `docs/03`, `docs/04`) — para o que não foi testado localmente.
+- **Fontes:** design §4/§11, `docs/01,03,04,08,09,10`, `benchmark/results/{tabela.md,results.json,paper_hibrido.md}`.
 - **Visuais:** **Tabela 2** (matriz de resultados da POC); **Tabela 3** (benchmarks de terceiros);
   **Figura 2** (latência × custo por modelo/modo); **Figura 3** (single-pass vs 2-step: barras de
   latência e custo); **Figura 4** (híbrido vs ingênuo no paper).
@@ -117,12 +117,12 @@ Cada seção abaixo é uma unidade de redação (um subagente por seção, com e
   Tech4.ai:** preservar o envelope `{status, extracted_data}`, reusar o `layout_id` como fonte do
   *JSON Schema*, manter os *validators* determinísticos (CPF/CNPJ) como pós-processamento, trocando
   só o motor 2-LLM → 1-VLM; (4) LGPD/residência de dados (self-host vs. API).
-- **Fontes:** `notes/05,06,07`, design §6.
+- **Fontes:** `docs/05,06,07`, design §6.
 - **Visuais:** **Tabela 4** (estimativa de custo de infra: API vs self-host).
 
 ### Referências
 - Converter todas as URLs citadas nas notas em referências ABNT (ordem alfabética; veículo em negrito).
-- **Fontes:** todas as seções "Fontes" de `notes/01-10`.
+- **Fontes:** todas as seções "Fontes" de `docs/01-10`.
 
 ---
 

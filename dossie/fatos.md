@@ -2,7 +2,7 @@
 
 Todo redator de seção DEVE usar estes números e esta redação. Não inventar valores.
 Números vêm de `benchmark/results/results.json` (re-run com prompt ancorado e métrica dupla)
-e das notas `notes/01-11`. Custos em US$ por documento; latência em segundos (p50 single-shot, OpenRouter).
+e das notas `docs/01-11`. Custos em US$ por documento; latência em segundos (p50 single-shot, OpenRouter).
 
 ## 1. Resultados da matriz POC (CNH + Fatura; modelos via OpenRouter)
 
@@ -47,10 +47,10 @@ e das notas `notes/01-11`. Custos em US$ por documento; latência em segundos (p
    zero e iguala o modelo pequeno ao forte; (c) escalar para `gemini-2.5-pro` (~57× o custo) NÃO
    recupera campos além do prompt ancorado; (d) o CPF permanece irrecuperável (erro de dígito no JPEG).
 5. **Confiabilidade da avaliação:** o LLM-as-judge é NÃO-CALIBRADO em baixa-res — diverge da métrica
-   determinística em ±0,17, ora superestimando, ora subestimando. Por isso a POC reporta as DUAS
+   determinística em 0,34 a 0,66 (escala 0–1), ora superestimando, ora subestimando. Por isso a POC reporta as DUAS
    métricas; a determinística (vs ground truth) é indispensável para relato honesto.
 
-## 3. Benchmarks de terceiros (fundamentam o não-testado; fontes em notes/01,03,04)
+## 3. Benchmarks de terceiros (fundamentam o não-testado; fontes em docs/01,03,04)
 
 - **Qwen2.5-VL-7B**: DocVQA 95,7 vs 96,4 do 72B (gap <1 pt); ChartQA 87,3 vs 89,5 → modelo pequeno
   ≈ grande em documentos estruturados.
@@ -62,7 +62,7 @@ e das notas `notes/01-11`. Custos em US$ por documento; latência em segundos (p
 - **Document AI gerenciado**: ~US$1,50/1.000 págs (OCR puro); Azure/Google Layout US$10/1.000 págs
   e emitem Markdown LLM-friendly; Google Layout Parser verbaliza figuras via Gemini.
 
-## 4. Preços de API (US$/1M tokens input/output; notes/07)
+## 4. Preços de API (US$/1M tokens input/output; docs/07)
 
 | modelo | input | output |
 |---|---|---|
@@ -72,7 +72,7 @@ e das notas `notes/01-11`. Custos em US$ por documento; latência em segundos (p
 | claude-3.5-haiku | 0,80 | 4,00 |
 | qwen2.5-vl-72b | 0,80 | 1,00 |
 
-## 5. Baseline Tech4.ai (notes/06)
+## 5. Baseline Tech4.ai (docs/06)
 
 `POST https://api.tech4.ai/document/extract/`, entrada `{file_url, layout_id}`, saída
 `{status, extracted_data}`. Campos definidos num *visual builder* (nome + tipo + descrição em

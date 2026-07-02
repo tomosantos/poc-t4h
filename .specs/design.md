@@ -38,16 +38,16 @@ ou aumentando a **acurácia** da extração.
 
 **Colapsar 2 inferências → 1, via VLM single-pass + structured output (constrained decoding).**
 
-Cadeia de evidências (ver `notes/`):
+Cadeia de evidências (ver `docs/`):
 1. **A 2ª chamada é eliminável.** Constrained decoding (Structured Outputs da OpenAI/Anthropic GA, `responseSchema`
    do Gemini; XGrammar/Outlines no OSS) **garante** JSON conforme ao schema numa única passada, com overhead de
-   latência quase nulo (XGrammar <40µs/token). `notes/02`.
+   latência quase nulo (XGrammar <40µs/token). `docs/02`.
 2. **O `layout_id` já É o JSON Schema.** O builder da Tech4.ai vira a fonte do schema; validators viram
-   pós-processamento determinístico. Integração natural. `notes/02` + `notes/06`.
+   pós-processamento determinístico. Integração natural. `docs/02` + `docs/06`.
 3. **Modelos pequenos bastam.** Qwen2.5-VL-7B: DocVQA 95.7 vs 96.4 do 72B (gap <1pt); Gemini Flash / GPT-4o-mini
-   custam ~10–20x menos que topo de linha. `notes/03`.
+   custam ~10–20x menos que topo de linha. `docs/03`.
 4. **VLM lê gráfico melhor que OCR+LLM** (ChartQA 85–89%) porque interpreta o layout visual nativamente — ataca a
-   4ª dor. `notes/01` + `notes/03`.
+   4ª dor. `docs/01` + `docs/03`.
 
 A tese ataca **as 4 dores simultaneamente**: latência (1 chamada), custo (modelo pequeno + 1 chamada), layouts
 complexos (VLM nativo), gráficos (visão).
@@ -76,7 +76,7 @@ aos resultados.
 - **Latência:** medida no POC (wall-clock por documento, p50). Benchmarks de terceiros não padronizam latência.
 - **Custo:** `usage.cost` retornado automaticamente pelo OpenRouter por request (US$/documento).
 - **Benchmarks de terceiros** (fundamentam o que não dá pra testar): DocVQA, FUNSD, CORD, SROIE, ChartQA,
-  OmniDocBench. `notes/01`.
+  OmniDocBench. `docs/01`.
 
 ---
 
@@ -133,7 +133,7 @@ self-hosted sem GPU local), opcional `anthropic/claude-3.5-haiku`.
 Espelha as 6 seções obrigatórias do desafio e as convenções do TCP de referência (`example/`):
 
 1. **Introdução** — problema de negócio (API Tech4.ai 2-step e as 4 dores) + objetivo da pesquisa.
-2. **Metodologia** — varredura paralela de pesquisa, fontes (`notes/` citadas), o que foi descartado rápido e por
+2. **Metodologia** — varredura paralela de pesquisa, fontes (`docs/` citadas), o que foi descartado rápido e por
    quê, e **uso de ferramentas de IA** (declarar Claude Code de forma honesta e específica).
 3. **Técnicas e Modelos Avaliados** — shortlist A/B/C com trade-offs.
 4. **Resultados e Experimentos** — framework de métricas + tabela da POC + tabela de benchmarks de terceiros;
@@ -176,7 +176,7 @@ convenções visuais (figuras, tabelas, legendas).
 
 ## 9. Lacunas Abertas (resolver durante a execução)
 
-- Validar IDs/preços de modelos no OpenRouter no momento da execução (alguns slugs mudam; `notes/07`).
+- Validar IDs/preços de modelos no OpenRouter no momento da execução (alguns slugs mudam; `docs/07`).
 - Confirmar limite de páginas do plugin file-parser para o paper (28 MB / multipágina).
 - Definir o conjunto exato de campos da fatura CELPE ao inspecionar o documento.
 - Modelo juiz a usar (ex.: GPT-4o ou Gemini 2.5 Pro) e o prompt de julgamento.
@@ -185,7 +185,7 @@ convenções visuais (figuras, tabelas, legendas).
 
 ## 10. Notas de Pesquisa (fontes)
 
-Toda a fundamentação está em `notes/`:
+Toda a fundamentação está em `docs/`:
 - `01-baseline-e-metricas.md` — métricas e benchmarks
 - `02-structured-output.md` — constrained decoding / eliminar a 2ª chamada
 - `03-vlms-single-pass.md` — VLMs e trade-off custo×acurácia

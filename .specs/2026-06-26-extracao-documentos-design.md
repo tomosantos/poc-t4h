@@ -38,16 +38,16 @@ ou aumentando a **acurácia** da extração.
 
 **Colapsar 2 inferências → 1, via VLM single-pass + structured output (constrained decoding).**
 
-Cadeia de evidências (ver `notes/`):
+Cadeia de evidências (ver `docs/`):
 1. **A 2ª chamada é eliminável.** Constrained decoding (Structured Outputs da OpenAI/Anthropic GA, `responseSchema`
    do Gemini; XGrammar/Outlines no OSS) **garante** JSON conforme ao schema numa única passada, com overhead de
-   latência quase nulo (XGrammar <40µs/token). `notes/02`.
+   latência quase nulo (XGrammar <40µs/token). `docs/02`.
 2. **O `layout_id` já É o JSON Schema.** O builder da Tech4.ai vira a fonte do schema; validators viram
-   pós-processamento determinístico. Integração natural. `notes/02` + `notes/06`.
+   pós-processamento determinístico. Integração natural. `docs/02` + `docs/06`.
 3. **Modelos pequenos bastam.** Qwen2.5-VL-7B: DocVQA 95.7 vs 96.4 do 72B (gap <1pt); Gemini Flash / GPT-4o-mini
-   custam ~10–20x menos que topo de linha. `notes/03`.
+   custam ~10–20x menos que topo de linha. `docs/03`.
 4. **VLM lê gráfico melhor que OCR+LLM** (ChartQA 85–89%) porque interpreta o layout visual nativamente — ataca a
-   4ª dor. `notes/01` + `notes/03`.
+   4ª dor. `docs/01` + `docs/03`.
 
 A tese ataca **as 4 dores simultaneamente**: latência (1 chamada), custo (modelo pequeno + 1 chamada), layouts
 complexos (VLM nativo), gráficos (visão).
@@ -78,16 +78,16 @@ A POC reporta **duas métricas de acurácia**:
   campo a campo. Aplicada a todos os documentos.
 
 **Observação crítica sobre calibração do juiz:** nos experimentos com a CNH (imagem de baixa resolução, 341×600 px),
-o juiz demonstrou-se **não-calibrado** — gap de ±0,17 entre `acuracia_juiz` e `acuracia_det`, ora superestimando
+o juiz demonstrou-se **não-calibrado** — gap entre 0,34 e 0,66 entre `acuracia_juiz` e `acuracia_det`, ora superestimando
 (ex.: gpt-4o-mini juiz=0,50 vs det=0,50; Gemini juiz=0,50 vs det=0,67; mas em diagnóstico isolado gpt-4o-mini
 juiz=0,83 vs det≈0,17), ora subestimando. O juiz tende a aprovar valores incorretos quando a própria imagem fonte
 é de difícil leitura. **Conclusão metodológica:** a métrica determinística é indispensável para documentos com
-ground truth disponível; o juiz isolado é insuficiente em cenários de baixa resolução. `notes/08`.
+ground truth disponível; o juiz isolado é insuficiente em cenários de baixa resolução. `docs/08`.
 
 - **Latência:** wall-clock por documento (p50), medida no POC.
 - **Custo:** `usage.cost` retornado pelo OpenRouter por request (US$/documento).
 - **Benchmarks de terceiros** (fundamentam o que não dá pra testar): DocVQA, FUNSD, CORD, SROIE, ChartQA,
-  OmniDocBench. `notes/01`.
+  OmniDocBench. `docs/01`.
 
 ---
 
@@ -149,7 +149,7 @@ Os experimentos evidenciam que **escalar para modelo maior compensa em problemas
 elaborados, raciocínio estrutural), mas **não em problemas de legibilidade** — onde o gargalo é a resolução da
 imagem fonte, não a capacidade do modelo. Para a CNH (341×600 px), gemini-2.5-pro (~57× o custo do flash-lite)
 não recupera nenhum campo adicional; o lever correto é preprocessing (upscaling, crop, OCR dedicado) ou
-re-captura do documento. `notes/09`, `notes/10`. Essa nuance equilibra a tese "tecnologia mais nova vs. solução
+re-captura do documento. `docs/09`, `docs/10`. Essa nuance equilibra a tese "tecnologia mais nova vs. solução
 mais viável" e deve ser explicitada na recomendação final do dossiê.
 
 ---
@@ -159,7 +159,7 @@ mais viável" e deve ser explicitada na recomendação final do dossiê.
 Espelha as 6 seções obrigatórias do desafio e as convenções do TCP de referência (`example/`):
 
 1. **Introdução** — problema de negócio (API Tech4.ai 2-step e as 4 dores) + objetivo da pesquisa.
-2. **Metodologia** — varredura paralela de pesquisa, fontes (`notes/` citadas), o que foi descartado rápido e por
+2. **Metodologia** — varredura paralela de pesquisa, fontes (`docs/` citadas), o que foi descartado rápido e por
    quê, e **uso de ferramentas de IA** (declarar Claude Code de forma honesta e específica).
 3. **Técnicas e Modelos Avaliados** — shortlist A/B/C com trade-offs.
 4. **Resultados e Experimentos** — framework de métricas (dupla: determinística + juiz) + tabela da POC +
@@ -181,10 +181,10 @@ convenções visuais (figuras, tabelas, legendas).
 - **n=3 documentos** — amostra pequena; resultados são ilustrativos, não estatisticamente significativos.
 - **Viés do avaliador (LLM-as-judge) em baixa resolução** — o juiz demonstrou-se não-calibrado para a CNH
   (341×600 px): gap ±0,17 vs. acurácia determinística, aprovando valores incorretos quando a imagem fonte é de
-  difícil leitura. Mitigado pela métrica determinística paralela; documentado em `notes/08`.
+  difícil leitura. Mitigado pela métrica determinística paralela; documentado em `docs/08`.
 - **CPF da CNH irrecuperável no JPEG** — o dígito do CPF é ilegível no arquivo 341×600 px por limitação de
   legibilidade intrínseca da imagem; upscaling Lanczos não ajuda e modelos maiores também falham. A solução
-  correta é preprocessing/OCR ou re-captura, não escalar o modelo. `notes/09`.
+  correta é preprocessing/OCR ou re-captura, não escalar o modelo. `docs/09`.
 - **Fatura sem ground-truth determinístico** — sem rótulo manual, a fatura CELPE é avaliada apenas pelo juiz
   (`acuracia_juiz`); a métrica determinística não se aplica a esse documento.
 - **Latência não padronizada** — medições do POC dependem de rede/fila do OpenRouter; reportar p50 e condições.
@@ -209,7 +209,7 @@ convenções visuais (figuras, tabelas, legendas).
 
 ## 9. Lacunas Abertas (resolver durante a execução)
 
-- Validar IDs/preços de modelos no OpenRouter no momento da execução (alguns slugs mudam; `notes/07`).
+- Validar IDs/preços de modelos no OpenRouter no momento da execução (alguns slugs mudam; `docs/07`).
 - Confirmar limite de páginas do plugin file-parser para o paper (28 MB / multipágina).
 - Definir o conjunto exato de campos da fatura CELPE ao inspecionar o documento.
 - Modelo juiz a usar (ex.: GPT-4o ou Gemini 2.5 Pro) e o prompt de julgamento.
@@ -218,7 +218,7 @@ convenções visuais (figuras, tabelas, legendas).
 
 ## 10. Notas de Pesquisa (fontes)
 
-Toda a fundamentação está em `notes/`:
+Toda a fundamentação está em `docs/`:
 - `01-baseline-e-metricas.md` — métricas e benchmarks
 - `02-structured-output.md` — constrained decoding / eliminar a 2ª chamada
 - `03-vlms-single-pass.md` — VLMs e trade-off custo×acurácia
@@ -252,16 +252,16 @@ Fonte: `benchmark/results/tabela.md`
 ### Achados-chave
 
 - **Tese 2→1 confirmada:** single-pass é consistentemente mais rápido e mais barato que o 2-step, com acurácia
-  igual ou melhor. Ex.: fatura/gemini single 3,3s/$0,0004 vs two_step 4,9s/$0,0006. (`notes/02`, benchmark)
+  igual ou melhor. Ex.: fatura/gemini single 3,3s/$0,0004 vs two_step 4,9s/$0,0006. (`docs/02`, benchmark)
 
 - **Híbrido PDF >> VLM ingênuo (paper):** enviar o PDF inteiro (28 MB / 42 págs) ao VLM falha — 615s e erro
   do provedor (choices=None). O híbrido extrai 42 págs em ~5s a custo zero via PyMuPDF (`extractor/pdf_extract.py`)
-  e usa o VLM apenas numa figura (~$0,0004). (`notes/04`, `benchmark/results/paper_hibrido.md`)
+  e usa o VLM apenas numa figura (~$0,0004). (`benchmark/results/paper_hibrido.md`)
 
 - **CNH (341×600 px) — legibilidade intrínseca é o gargalo:** upscaling Lanczos não ajuda (+153% custo,
-  0 ganho — `notes/09`); prompt ancorado recupera `data_emissao` sem custo extra e empata o modelo pequeno com
-  o forte; escalar para gemini-2.5-pro (~57× o custo) não recupera nenhum campo extra (`notes/10`); CPF permanece
+  0 ganho — `docs/09`); prompt ancorado recupera `data_emissao` sem custo extra e empata o modelo pequeno com
+  o forte; escalar para gemini-2.5-pro (~57× o custo) não recupera nenhum campo extra (`docs/10`); CPF permanece
   irrecuperável (erro de dígito no JPEG — limitação da imagem fonte, não do modelo).
 
 - **Juiz LLM não-calibrado em baixa-res:** gap ±0,17 entre `acuracia_juiz` e `acuracia_det` na CNH — daí a
-  necessidade da métrica dupla. (`notes/08`)
+  necessidade da métrica dupla. (`docs/08`)

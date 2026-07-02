@@ -1,0 +1,19 @@
+% Quebra de URLs longas nas referências (evita estouro de margem).
+\usepackage{xurl}
+
+% Legibilidade de tabelas largas: fonte menor e colunas mais justas nos longtables.
+\usepackage{etoolbox}
+\AtBeginEnvironment{longtable}{\footnotesize\setlength{\tabcolsep}{4pt}}
+
+% Ajuda o TeX a quebrar linhas difíceis (URLs, palavras longas) sem estourar a margem.
+\setlength{\emergencystretch}{3em}
+
+% Recuo na primeira linha de todo parágrafo, inclusive o que segue um
+% título de seção (o padrão do LaTeX suprime esse recuo; ABNT não).
+\usepackage{indentfirst}
+
+% Listas (enumerate/itemize) mais compactas: o espaçamento padrão do
+% article, herdado pelo linestretch=1.5, deixa listas com dois
+% parágrafos de altura por item vazios. Reduz sem remover a separação.
+\usepackage{enumitem}
+\setlist{itemsep=2pt, topsep=4pt, parsep=0pt}

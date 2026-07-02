@@ -31,7 +31,7 @@ Four research-oriented skills are installed in `.claude/skills/`:
 
 - **`search-first`** — Run before writing any code; searches npm/PyPI/MCP/GitHub for existing solutions.
 - **`research-agent`** — System prompt playbook for building citation-backed research agents (TL;DR → findings → sources → unverified).
-- **`research-tasks`** — Lightweight web-research process: search → save to `notes/` → structured answer.
+- **`research-tasks`** — Lightweight web-research process: search → save to `docs/` → structured answer.
 - **`academic-researcher`** — Framework for literature reviews, paper analysis, and citation formatting (APA/MLA/Chicago).
 
 ## Writing Reference
@@ -47,4 +47,4 @@ When drafting or reviewing any section of the research dossier, compare against 
 
 ## Architecture
 
-There is no build system yet. When implementing the POC, prefer Python with a `requirements.txt` or a Jupyter notebook (`notebooks/`) for reproducibility. Save research notes as markdown under `notes/`. The challenge specification is at `Desafio Técnico_ Pesquisador de IA Generativa (P&D).pdf`.
+There is no build system yet. When implementing the POC, prefer Python with a `requirements.txt` or a Jupyter notebook (`notebooks/`) for reproducibility. Save research notes as markdown under `docs/`. The challenge specification is at `Desafio Técnico_ Pesquisador de IA Generativa (P&D).pdf`.
