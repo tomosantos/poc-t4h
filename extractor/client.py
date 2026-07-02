@@ -200,15 +200,17 @@ class OpenRouterClient:
             {"role": "user", "content": f"Layout: {layout.descricao}. Extraia os campos "
                                          f"a partir do conteúdo abaixo (já extraído "
                                          f"deterministicamente do PDF). Para campos de texto "
-                                         f"longo, condense preservando tabelas e números-chave "
-                                         f"— não repita o conteúdo inteiro palavra por "
-                                         f"palavra.\n\n{md}"},
+                                         f"longo, RESUMA em no máximo 400 palavras, preservando "
+                                         f"tabelas e números-chave — não copie o conteúdo "
+                                         f"integralmente palavra por palavra.\n\n{md}"},
         ]
-        # max_tokens explícito: sem isso alguns provedores cortam a resposta no
-        # meio da string JSON (achado: gemini-2.5-flash-lite, qwen3-vl-8b/32b
-        # devolviam JSON truncado ao tentar reproduzir o markdown inteiro).
+        # Achado ao vivo: com instrução vaga ("condense") o modelo tentava
+        # reproduzir o markdown quase inteiro (chegou a gerar 19k+ chars antes
+        # de bater o teto), cortando a string JSON no meio (finish_reason=
+        # "length"). Um limite numérico explícito (400 palavras) é seguido de
+        # forma muito mais confiável do que uma instrução vaga.
         kwargs: dict = dict(
-            model=modelo, messages=msg_final, max_tokens=max_tokens or 4000,
+            model=modelo, messages=msg_final, max_tokens=max_tokens or 2000,
             response_format={"type": "json_schema", "json_schema": {
                 "name": layout.layout_id, "strict": True, "schema": schema}})
         resp = self.client.chat.completions.create(**kwargs)
