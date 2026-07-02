@@ -59,7 +59,14 @@ apresentação.
 
    Conteúdo textual de cada achado é o mesmo já existente no código
    atual (linhas 92-130) — só muda o container visual, não o texto.
-6. **Extração ao Vivo (Demo)** *(sem mudança)*.
+6. **Extração ao Vivo (Demo)** *(pequeno acréscimo textual)* — a lógica
+   não muda, mas fica implícito hoje o que a seção demonstra. Adicionar
+   um parágrafo logo após o header deixando explícito que: (a) a seção
+   roda o modo `single` (single-pass VLM + structured output), a
+   técnica recomendada e validada no benchmark; (b) o baseline
+   `two-step` existe no código (`extractor.pipeline.two_step`) mas não
+   é exposto aqui para comparação lado a lado — quem só usa esta seção
+   não vê a técnica antiga sendo reproduzida, só a recomendada.
 
 ## Fora de escopo
 
