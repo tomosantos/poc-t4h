@@ -199,14 +199,18 @@ class OpenRouterClient:
             {"role": "system", "content": _PROMPT_EXTRACAO},
             {"role": "user", "content": f"Layout: {layout.descricao}. Extraia os campos "
                                          f"a partir do conteúdo abaixo (já extraído "
-                                         f"deterministicamente do PDF).\n\n{md}"},
+                                         f"deterministicamente do PDF). Para campos de texto "
+                                         f"longo, condense preservando tabelas e números-chave "
+                                         f"— não repita o conteúdo inteiro palavra por "
+                                         f"palavra.\n\n{md}"},
         ]
+        # max_tokens explícito: sem isso alguns provedores cortam a resposta no
+        # meio da string JSON (achado: gemini-2.5-flash-lite, qwen3-vl-8b/32b
+        # devolviam JSON truncado ao tentar reproduzir o markdown inteiro).
         kwargs: dict = dict(
-            model=modelo, messages=msg_final,
+            model=modelo, messages=msg_final, max_tokens=max_tokens or 4000,
             response_format={"type": "json_schema", "json_schema": {
                 "name": layout.layout_id, "strict": True, "schema": schema}})
-        if max_tokens is not None:
-            kwargs["max_tokens"] = max_tokens
         resp = self.client.chat.completions.create(**kwargs)
         n_chamadas += 1
         latencia = time.perf_counter() - t0
