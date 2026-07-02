@@ -61,3 +61,11 @@ def test_secao_achados_chave_tem_5_expanders():
     assert len(at.info) == 0
     assert len(at.warning) == 0
     assert len(at.success) == 0
+
+
+def test_secao_demo_explica_single_pass_e_limite_two_step():
+    at = _run_app()
+    corpo = "\n".join(m.value for m in at.markdown)
+    assert "single-pass" in corpo
+    assert "two_step" in corpo or "two-step" in corpo
+    assert "lado a lado" in corpo

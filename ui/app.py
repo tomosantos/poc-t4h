@@ -190,6 +190,14 @@ st.divider()
 
 # ── SEÇÃO 4: EXTRAÇÃO AO VIVO ────────────────────────────────────────────────
 st.header("Extração ao Vivo")
+st.markdown(
+    "Esta seção roda o modo `single` (single-pass VLM + structured output), a "
+    "técnica recomendada e validada no benchmark acima. O baseline `two_step` "
+    "(interpretação livre + formatação JSON) existe no código "
+    "(`extractor.pipeline.two_step`) mas não é exposto aqui lado a lado — quem "
+    "só usa esta seção não vê a técnica antiga sendo reproduzida, só a "
+    "recomendada."
+)
 st.caption(
     "Reproduza qualquer extração — verifique os achados acima com seus próprios documentos."
 )
