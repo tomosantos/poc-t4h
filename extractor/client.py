@@ -51,10 +51,26 @@ def _usage_custo(resp) -> tuple[Optional[float], int, int]:
     return custo, tin, tout
 
 
+def _erro_provedor(resp) -> Optional[str]:
+    """OpenRouter às vezes devolve HTTP 200 com choices vazio/None e o motivo
+    real dentro de um campo extra `error` (rate limit, moderação, schema não
+    suportado pelo modelo etc.) — captura isso pra dar uma mensagem acionável."""
+    extra = getattr(resp, "model_extra", None) or {}
+    erro = extra.get("error")
+    if not erro:
+        return None
+    if isinstance(erro, dict):
+        return erro.get("message") or str(erro)
+    return str(erro)
+
+
 def _conteudo(resp, modelo: str) -> str:
     """Extrai o texto da resposta, falhando com mensagem clara se o provedor
     devolveu um envelope de erro (choices=None) ou conteúdo vazio/recusado."""
     if not getattr(resp, "choices", None):
+        detalhe = _erro_provedor(resp)
+        if detalhe:
+            raise ValueError(f"Erro do provedor pro modelo {modelo}: {detalhe}")
         raise ValueError(f"Sem choices na resposta do modelo {modelo} (provável erro do provedor).")
     conteudo = resp.choices[0].message.content
     if not conteudo:
