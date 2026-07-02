@@ -21,10 +21,7 @@ MODELOS_UI = [
     "openai/gpt-4o-mini",
     "qwen/qwen2.5-vl-72b-instruct",
     "google/gemini-3.1-flash-lite",
-    "openai/gpt-5-mini",
     "anthropic/claude-haiku-4.5",
-    "qwen/qwen3-vl-8b-instruct",
-    "qwen/qwen3-vl-32b-instruct",
 ]
 
 _RESULTS_PATH = Path(__file__).parent.parent / "benchmark" / "results" / "results.json"
