@@ -188,8 +188,8 @@ with st.expander("Modelos testados são mid-tier 2024/2025 — abordagem é mode
 
 st.divider()
 
-# ── SEÇÃO 4: EXTRAÇÃO AO VIVO ────────────────────────────────────────────────
-st.header("Extração ao Vivo")
+# ── SEÇÃO 4: DEMO ────────────────────────────────────────────────────────────
+st.header("Demo")
 st.markdown(
     "Esta seção roda a técnica recomendada em cada caso: `single` "
     "(single-pass VLM + structured output) para imagens, e `hybrid` "
