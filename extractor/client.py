@@ -195,28 +195,39 @@ class OpenRouterClient:
             md += f"\n\n## Figura (página {indice + 1})\n{desc}"
 
         schema = construir_json_schema(layout)
-        msg_final = [
-            {"role": "system", "content": _PROMPT_EXTRACAO},
-            {"role": "user", "content": f"Layout: {layout.descricao}. Extraia os campos "
-                                         f"a partir do conteúdo abaixo (já extraído "
-                                         f"deterministicamente do PDF). Para campos de texto "
-                                         f"longo, RESUMA em no máximo 400 palavras, preservando "
-                                         f"tabelas e números-chave — não copie o conteúdo "
-                                         f"integralmente palavra por palavra.\n\n{md}"},
-        ]
+
+        def _chamar_final(palavras: int, tokens: int, conteudo_md: str):
+            msg_final = [
+                {"role": "system", "content": _PROMPT_EXTRACAO},
+                {"role": "user", "content": f"Layout: {layout.descricao}. Extraia os campos "
+                                             f"a partir do conteúdo abaixo (já extraído "
+                                             f"deterministicamente do PDF). Para campos de "
+                                             f"texto longo, RESUMA em no máximo {palavras} "
+                                             f"palavras, preservando tabelas e números-chave "
+                                             f"— não copie o conteúdo integralmente palavra "
+                                             f"por palavra.\n\n{conteudo_md}"},
+            ]
+            return self.client.chat.completions.create(
+                model=modelo, messages=msg_final, max_tokens=tokens,
+                response_format={"type": "json_schema", "json_schema": {
+                    "name": layout.layout_id, "strict": True, "schema": schema}})
+
         # Achado ao vivo: com instrução vaga ("condense") o modelo tentava
         # reproduzir o markdown quase inteiro (chegou a gerar 19k+ chars antes
         # de bater o teto), cortando a string JSON no meio (finish_reason=
         # "length"). Um limite numérico explícito (400 palavras) é seguido de
-        # forma muito mais confiável do que uma instrução vaga.
-        kwargs: dict = dict(
-            model=modelo, messages=msg_final, max_tokens=max_tokens or 2000,
-            response_format={"type": "json_schema", "json_schema": {
-                "name": layout.layout_id, "strict": True, "schema": schema}})
-        resp = self.client.chat.completions.create(**kwargs)
+        # forma muito mais confiável do que uma instrução vaga — mas alguns
+        # modelos (ex.: qwen3-vl) ainda ignoram o cap às vezes, daí o retry
+        # com instrução mais curta e input reduzido.
+        resp = _chamar_final(400, max_tokens or 2000, md)
         n_chamadas += 1
+        try:
+            dados = json.loads(_conteudo(resp, modelo))
+        except json.JSONDecodeError:
+            resp = _chamar_final(150, max_tokens or 1200, md[: len(md) // 2])
+            n_chamadas += 1
+            dados = json.loads(_conteudo(resp, modelo))
         latencia = time.perf_counter() - t0
-        dados = json.loads(_conteudo(resp, modelo))
         c, ti, to = _usage_custo(resp)
         if c is not None:
             custos.append(c)
