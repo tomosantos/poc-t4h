@@ -63,10 +63,10 @@ if os.path.exists(_RESULTS_PATH):
         if not isinstance(val, float) or math.isnan(val):
             return ""
         if val >= 0.7:
-            return "background-color: #d4edda"
+            return "background-color: #d4edda; color: #155724"
         if val >= 0.5:
-            return "background-color: #fff3cd"
-        return "background-color: #f8d7da"
+            return "background-color: #fff3cd; color: #856404"
+        return "background-color: #f8d7da; color: #721c24"
 
     st.dataframe(
         df_display.style.map(_cor_ac, subset=["Ac. Juiz", "Ac. Det."]),
