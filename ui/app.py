@@ -145,46 +145,46 @@ st.divider()
 # ── SEÇÃO 3: ACHADOS CHAVE ───────────────────────────────────────────────────
 st.header("Achados Chave")
 
-col1, col2 = st.columns(2)
-with col1:
-    st.info(
-        "**Prompt ancorado supera escalação de modelo**\n\n"
+with st.expander("Prompt ancorado supera escalação de modelo"):
+    st.markdown(
         "`gemini-2.5-flash-lite` com prompt com âncoras de campo atinge o mesmo 4/6 "
         "que `gemini-2.5-pro`, a **57× menos custo**. "
         "Escalação de modelo não compensa para documentos com layout ambíguo."
     )
-    st.info(
-        "**Juiz LLM é leniente — métrica dupla é necessária**\n\n"
+
+with st.expander("Juiz LLM é leniente — métrica dupla é necessária"):
+    st.markdown(
         "`gpt-4o` como juiz aprovou datas incorretas ao comparar com imagem de baixa "
         "resolução. Métrica determinística (campo a campo vs. ground truth) é mais "
         "confiável que LLM-as-judge isolado."
     )
-with col2:
-    st.warning(
-        "**CPF: gargalo de legibilidade intrínseca**\n\n"
+
+with st.expander("CPF: gargalo de legibilidade intrínseca"):
+    st.markdown(
         "Falha em **100% dos modelos e modos** no baseline. Upscaling 3× LANCZOS "
         "não ajudou (+153% custo, zero ganho). "
         "DeepSeek V4 Flash foi testado mas não tinha suporte a imagem no OpenRouter "
         "à época da avaliação (`Error 404: No endpoints found that support image input`), "
         "excluído da matriz final. Candidatos com OCR superior: `qwen3-vl-32b`."
     )
-    st.success(
-        "**Single-pass funciona para fatura e paper**\n\n"
+
+with st.expander("Single-pass funciona para fatura e paper"):
+    st.markdown(
         "Acurácia ≥ 0.85 com modelo pequeno. Two-step acrescenta latência e custo "
         "sem ganho proporcional em documentos sem ambiguidade de layout."
     )
 
-st.info(
-    "**Modelos testados são mid-tier 2024/2025 — a abordagem é model-agnostic**\n\n"
-    "Baseline: `gemini-2.5-flash-lite` \\$0.10/1M · `gpt-4o-mini` \\$0.15/1M · "
-    "`qwen2.5-vl-72b` \\$0.80/1M.  \n"
-    "Candidatos 2025/2026 incluídos nesta versão: `qwen3-vl-32b` \\$0.10/1M "
-    "(melhor OCR, mesmo custo) · `deepseek-v4-flash` \\$0.09/1M (mais barato) · "
-    "`gemini-3.1-flash-lite` \\$0.25/1M · `gpt-5-mini` \\$0.25/1M · "
-    "`claude-haiku-4.5` \\$1.00/1M.  \n"
-    "Modelos frontier (GPT-5.5 \\$5/1M, Sonnet 4.6 \\$3/1M) são 20–50× mais caros "
-    "sem ganho proporcional esperado para extração de documentos estruturados."
-)
+with st.expander("Modelos testados são mid-tier 2024/2025 — abordagem é model-agnostic"):
+    st.markdown(
+        "Baseline: `gemini-2.5-flash-lite` \\$0.10/1M · `gpt-4o-mini` \\$0.15/1M · "
+        "`qwen2.5-vl-72b` \\$0.80/1M.  \n"
+        "Candidatos 2025/2026 incluídos nesta versão: `qwen3-vl-32b` \\$0.10/1M "
+        "(melhor OCR, mesmo custo) · `deepseek-v4-flash` \\$0.09/1M (mais barato) · "
+        "`gemini-3.1-flash-lite` \\$0.25/1M · `gpt-5-mini` \\$0.25/1M · "
+        "`claude-haiku-4.5` \\$1.00/1M.  \n"
+        "Modelos frontier (GPT-5.5 \\$5/1M, Sonnet 4.6 \\$3/1M) são 20–50× mais caros "
+        "sem ganho proporcional esperado para extração de documentos estruturados."
+    )
 
 st.divider()
 
