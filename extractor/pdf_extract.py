@@ -37,6 +37,20 @@ def extrair_markdown(caminho: str, max_paginas: Optional[int] = None) -> str:
     return "".join(partes).strip()
 
 
+def paginas_com_imagem(caminho: str, max_paginas: int = 3) -> list[int]:
+    """Índices (0-based) de páginas com imagem raster embutida — heurística
+    determinística (PyMuPDF, sem VLM) para achar candidatas a figura/gráfico
+    sem precisar rodar o modelo em todas as páginas do PDF."""
+    encontradas: list[int] = []
+    with fitz.open(caminho) as doc:
+        for i in range(doc.page_count):
+            if doc[i].get_images(full=True):
+                encontradas.append(i)
+            if len(encontradas) >= max_paginas:
+                break
+    return encontradas
+
+
 def renderizar_pagina(caminho: str, indice: int, zoom: float = 2.0) -> bytes:
     """Renderiza uma página (0-based) como PNG em bytes — para enviar a um VLM
     interpretar gráficos/figuras daquela página específica (sem mandar o PDF inteiro)."""

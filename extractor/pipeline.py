@@ -28,6 +28,8 @@ def extrair(caminho: str, layout: Layout, modelo: str, client, modo: str = "sing
             **kwargs):
     if modo == "two_step":
         resp = client.two_step(caminho, layout, modelo, **kwargs)
+    elif modo == "hybrid":
+        resp = client.hybrid_pass(caminho, layout, modelo, **kwargs)
     else:
         resp = client.single_pass(caminho, layout, modelo, **kwargs)
     limpo = aplicar_validators(resp.dados, layout)

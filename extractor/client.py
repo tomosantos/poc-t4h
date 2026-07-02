@@ -1,5 +1,6 @@
 # extractor/client.py
 """Cliente OpenRouter: extração single-pass e baseline 2-step."""
+import base64
 import json
 import os
 import time
@@ -10,6 +11,7 @@ from pydantic import BaseModel
 
 from extractor.encoding import bloco_documento, eh_pdf
 from extractor.models import Layout
+from extractor.pdf_extract import extrair_markdown, paginas_com_imagem, renderizar_pagina
 from extractor.schemas import construir_json_schema
 
 _PROMPT_EXTRACAO = (
@@ -136,3 +138,63 @@ class OpenRouterClient:
         return RespostaLLM(dados=dados, custo_usd=custo, tokens_in=i1 + i2,
                            tokens_out=o1 + o2, latencia_s=latencia, modelo=modelo,
                            n_chamadas=2)
+
+    def hybrid_pass(self, caminho: str, layout: Layout, modelo: str,
+                    max_figuras: int = 3, max_tokens: Optional[int] = None) -> RespostaLLM:
+        """Caminho híbrido pra PDF extenso: PyMuPDF extrai texto+tabelas
+        (determinístico, custo zero); o VLM interpreta só as páginas com
+        imagem embutida (até max_figuras). O texto combinado é formatado no
+        schema via structured output — sem reenviar o PDF inteiro pro VLM."""
+        t0 = time.perf_counter()
+        n_chamadas = 0
+        custos: list[float] = []
+        tin_total = tout_total = 0
+
+        md = extrair_markdown(caminho)
+        for indice in paginas_com_imagem(caminho, max_paginas=max_figuras):
+            png = renderizar_pagina(caminho, indice)
+            data_url = "data:image/png;base64," + base64.b64encode(png).decode("ascii")
+            msgs = [{"role": "user", "content": [
+                {"type": "text", "text": "Esta é uma página de um documento. Se houver "
+                 "gráfico(s) ou figura(s), descreva o que mostram e os principais "
+                 "valores/tendências. Se não houver, responda apenas 'sem figura'."},
+                {"type": "image_url", "image_url": {"url": data_url}},
+            ]}]
+            resp = self.client.chat.completions.create(
+                model=modelo, messages=msgs, max_tokens=500,
+                extra_body={"usage": {"include": True}})
+            n_chamadas += 1
+            desc = _conteudo(resp, modelo)
+            c, ti, to = _usage_custo(resp)
+            if c is not None:
+                custos.append(c)
+            tin_total += ti
+            tout_total += to
+            md += f"\n\n## Figura (página {indice + 1})\n{desc}"
+
+        schema = construir_json_schema(layout)
+        msg_final = [
+            {"role": "system", "content": _PROMPT_EXTRACAO},
+            {"role": "user", "content": f"Layout: {layout.descricao}. Extraia os campos "
+                                         f"a partir do conteúdo abaixo (já extraído "
+                                         f"deterministicamente do PDF).\n\n{md}"},
+        ]
+        kwargs: dict = dict(
+            model=modelo, messages=msg_final,
+            response_format={"type": "json_schema", "json_schema": {
+                "name": layout.layout_id, "strict": True, "schema": schema}})
+        if max_tokens is not None:
+            kwargs["max_tokens"] = max_tokens
+        resp = self.client.chat.completions.create(**kwargs)
+        n_chamadas += 1
+        latencia = time.perf_counter() - t0
+        dados = json.loads(_conteudo(resp, modelo))
+        c, ti, to = _usage_custo(resp)
+        if c is not None:
+            custos.append(c)
+        tin_total += ti
+        tout_total += to
+        custo_total = sum(custos) if custos else None
+        return RespostaLLM(dados=dados, custo_usd=custo_total, tokens_in=tin_total,
+                           tokens_out=tout_total, latencia_s=latencia, modelo=modelo,
+                           n_chamadas=n_chamadas)

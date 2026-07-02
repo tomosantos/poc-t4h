@@ -191,12 +191,13 @@ st.divider()
 # ── SEÇÃO 4: EXTRAÇÃO AO VIVO ────────────────────────────────────────────────
 st.header("Extração ao Vivo")
 st.markdown(
-    "Esta seção roda o modo `single` (single-pass VLM + structured output), a "
-    "técnica recomendada e validada no benchmark acima. O baseline `two_step` "
-    "(interpretação livre + formatação JSON) existe no código "
-    "(`extractor.pipeline.two_step`) mas não é exposto aqui lado a lado — quem "
-    "só usa esta seção não vê a técnica antiga sendo reproduzida, só a "
-    "recomendada."
+    "Esta seção roda a técnica recomendada em cada caso: `single` "
+    "(single-pass VLM + structured output) para imagens, e `hybrid` "
+    "(PyMuPDF determinístico + VLM só nas páginas com figura, até 3) para "
+    "PDFs — selecionado automaticamente pelo tipo de arquivo enviado. O "
+    "baseline `two_step` (interpretação livre + formatação JSON) existe no "
+    "código (`extractor.pipeline.two_step`) mas não é exposto aqui lado a "
+    "lado."
 )
 st.caption(
     "Reproduza qualquer extração — verifique os achados acima com seus próprios documentos."
@@ -230,9 +231,10 @@ if arquivo and st.button("Extrair", type="primary"):
         st.subheader("Resultado")
         with st.spinner("Extraindo..."):
             try:
+                modo = "hybrid" if sufixo.lower() == ".pdf" else "single"
                 envelope, resp = extrair(
                     caminho, DOCUMENTOS[layout_id]["layout"],
-                    modelo, OpenRouterClient(), modo="single",
+                    modelo, OpenRouterClient(), modo=modo,
                 )
                 m1, m2, m3 = st.columns(3)
                 m1.metric("Status", envelope["status"])
