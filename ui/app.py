@@ -51,6 +51,48 @@ st.markdown(
 )
 st.divider()
 
+# ── SEÇÃO 1C: CONCEITOS ABORDADOS ────────────────────────────────────────────
+st.header("Conceitos Abordados")
+
+with st.expander("Single-pass vs. two-step"):
+    st.markdown(
+        "O pipeline tradicional divide a extração em duas chamadas de "
+        "modelo: uma para interpretar o documento em texto livre, outra "
+        "para reformatar esse texto em JSON estruturado. A abordagem "
+        "*single-pass* consolida as duas etapas em uma única chamada, "
+        "usando saída estruturada (JSON Schema) para garantir o formato "
+        "final diretamente na primeira interpretação."
+    )
+
+with st.expander("VLM (Vision-Language Model)"):
+    st.markdown(
+        "Um *Vision-Language Model* é um modelo multimodal capaz de "
+        "processar imagem e texto na mesma entrada, interpretando o "
+        "conteúdo visual do documento (layout, tabelas, campos) sem "
+        "depender de OCR prévio para extrair o texto bruto."
+    )
+
+with st.expander("Structured output / constrained decoding"):
+    st.markdown(
+        "*Structured output* força o modelo a gerar apenas tokens que "
+        "respeitam um schema JSON pré-definido, restringindo "
+        "(*constrained decoding*) o espaço de saída possível a cada passo "
+        "de geração. Isso elimina erros de formatação e a necessidade de "
+        "uma segunda chamada só para normalizar o texto em JSON."
+    )
+
+with st.expander("LLM-as-judge vs. métrica determinística"):
+    st.markdown(
+        "*LLM-as-judge* usa um modelo de linguagem para avaliar se a "
+        "extração está correta, comparando o resultado com a imagem ou "
+        "com um gabarito. É útil, mas pode ser leniente. A métrica "
+        "determinística compara campo a campo o valor extraído contra um "
+        "*ground truth* fixo, sem subjetividade — por isso o POC usa as "
+        "duas em conjunto."
+    )
+
+st.divider()
+
 # ── SEÇÃO 2: BENCHMARK ───────────────────────────────────────────────────────
 st.header("Resultados do Benchmark")
 
