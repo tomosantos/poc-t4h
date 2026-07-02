@@ -34,9 +34,20 @@ st.set_page_config(page_title="POC Extração de Documentos", layout="wide")
 # ── SEÇÃO 1: HEADER ──────────────────────────────────────────────────────────
 st.title("POC — Extração de Documentos")
 st.markdown(
-    "**Abordagem:** single-pass VLM + structured output  ·  "
     "**Documentos:** CNH · Fatura CELPE · Paper acadêmico  ·  "
     "**Modelos:** baseline mid-tier 2024/2025 + candidatos 2025/2026"
+)
+st.divider()
+
+# ── SEÇÃO 1B: ABORDAGEM UTILIZADA ────────────────────────────────────────────
+st.header("Abordagem Utilizada")
+st.markdown(
+    "O POC substitui o pipeline atual — duas chamadas de modelo, uma para "
+    "interpretar o documento e outra para formatar o resultado em JSON — por "
+    "uma única chamada *single-pass* com saída estruturada. O modelo lê o "
+    "documento (imagem ou PDF) e já retorna os dados no formato final, "
+    "eliminando uma etapa inteira do processo sem trocar de arquitetura de "
+    "modelo."
 )
 st.divider()
 
