@@ -69,7 +69,11 @@ with st.expander("VLM (Vision-Language Model)"):
         "Um *Vision-Language Model* é um modelo multimodal capaz de "
         "processar imagem e texto na mesma entrada, interpretando o "
         "conteúdo visual do documento (layout, tabelas, campos) sem "
-        "depender de OCR prévio para extrair o texto bruto."
+        "depender de OCR prévio para extrair o texto bruto. "
+        "É essa capacidade nativa de leitura visual que permite o pipeline "
+        "*single-pass* — o modelo lê diretamente a CNH, a fatura ou o paper "
+        "e retorna os dados estruturados em uma única chamada, sem etapas "
+        "intermediárias de conversão imagem → texto → JSON."
     )
 
 with st.expander("Structured output / constrained decoding"):
