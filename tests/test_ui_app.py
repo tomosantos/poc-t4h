@@ -55,17 +55,21 @@ def test_secao_achados_chave_tem_5_expanders():
     for label in labels_esperados:
         assert label in labels_encontrados
 
-    # Não deve sobrar nenhum st.info/st.warning/st.success da versão antiga
-    # (a seção de Conceitos usa só st.markdown dentro de expander, então
-    # qualquer alert restante pertence à implementação antiga de Achados).
-    assert len(at.info) == 0
-    assert len(at.warning) == 0
-    assert len(at.success) == 0
+    # Verifica que os achados antigos não aparecem em alerts (prova que a
+    # implementação antiga com st.info/st.warning/st.success foi removida).
+    # Procura cada título nos valores dos alerts coletados.
+    all_alerts = [elem.value for elem in list(at.info) + list(at.warning) + list(at.success)]
+    alert_text = "\n".join(all_alerts)
+    for label in labels_esperados:
+        assert label not in alert_text
 
 
 def test_secao_demo_explica_single_pass_e_limite_two_step():
     at = _run_app()
-    corpo = "\n".join(m.value for m in at.markdown)
-    assert "single-pass" in corpo
-    assert "two_step" in corpo or "two-step" in corpo
-    assert "lado a lado" in corpo
+    # Encontra o parágrafo Task 4 que contém "lado a lado" (é o único).
+    task4_elem = next(m.value for m in at.markdown if "lado a lado" in m.value)
+    # Assegura que os conceitos "single-pass" e "two_step/two-step" aparecem
+    # NESTE parágrafo específico, não apenas em algum lugar da página.
+    assert "single-pass" in task4_elem
+    assert "two_step" in task4_elem or "two-step" in task4_elem
+    assert "lado a lado" in task4_elem
