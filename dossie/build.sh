@@ -22,12 +22,17 @@ sed -i 's#\.\./figuras/#figuras/#g' dossie.md
 
 # As seções já trazem numeração manual nos títulos (## 2., ## 3., ...),
 # por isso NÃO usamos --number-sections (evita numeração dupla). --toc gera o sumário.
-"$PANDOC" dossie.md -o "$OUT" \
+# +autolink_bare_uris: URLs viram \url{} (quebráveis pelo xurl do header.tex).
+"$PANDOC" -f markdown+autolink_bare_uris dossie.md -o "$OUT" \
   --pdf-engine=xelatex \
   --toc --toc-depth=2 \
+  -H header.tex \
   -V mainfont="Times New Roman" \
-  -V geometry:margin=2.5cm \
-  -V fontsize=11pt \
+  -V geometry:top=3cm -V geometry:left=3cm -V geometry:bottom=2cm -V geometry:right=2cm \
+  -V fontsize=12pt \
+  -V linestretch=1.5 \
+  -V indent=true \
+  -V lang=pt-BR \
   -V documentclass=article \
   -V linkcolor=blue -V colorlinks=true
 

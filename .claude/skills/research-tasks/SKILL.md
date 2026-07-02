@@ -11,7 +11,7 @@ metadata:
 # Research task process
 
 1. Use `web_search` first for broad queries; use the browser tools when you need to read a specific page.
-2. Capture useful URLs and short quotes into a markdown file under `notes/` in the workspace.
+2. Capture useful URLs and short quotes into a markdown file under `docs/` in the workspace.
 3. Never invent sources. If a claim isn't supported by something you actually fetched, drop it.
 4. Final answer format:  
    * **Answer:** one paragraph.

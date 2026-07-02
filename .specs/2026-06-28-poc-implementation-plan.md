@@ -217,7 +217,7 @@ git commit -m "feat: validators CPF/CNPJ determinísticos"
 - Produces:
   - `FieldSpec(nome: str, tipo: Literal["text","number","date"], descricao: str, validador: Optional[Literal["cpf","cnpj"]] = None)` (pydantic BaseModel).
   - `Layout(layout_id: str, descricao: str, campos: list[FieldSpec])` (pydantic BaseModel).
-  - `construir_json_schema(layout: Layout) -> dict` — JSON Schema strict; todo campo `string` (datas como string), `number` para numéricos; inclui campo livre `_raciocinio: string` como PRIMEIRA propriedade (resolve o trade-off de structured output sem 2ª chamada — ver `.specs/.../design.md` §2 e `notes/02`).
+  - `construir_json_schema(layout: Layout) -> dict` — JSON Schema strict; todo campo `string` (datas como string), `number` para numéricos; inclui campo livre `_raciocinio: string` como PRIMEIRA propriedade (resolve o trade-off de structured output sem 2ª chamada — ver `.specs/.../design.md` §2 e `docs/02`).
 
 - [ ] **Step 1: Escrever o teste que falha**
 

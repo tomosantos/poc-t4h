@@ -1,7 +1,7 @@
 """Métrica determinística: compara extração com o ground truth, campo a campo.
 
 Complementa o LLM-as-judge (que se mostrou não-confiável em documentos de baixa
-resolução — ver notes/08). Normalização justa: casefold, sem acento, sem
+resolução — ver docs/08). Normalização justa: casefold, sem acento, sem
 pontuação; CPF e datas comparados só por dígitos; filiação ignora prefixo
 pai/mãe. Reportar AS DUAS métricas (determinística e juiz) é decisão de método.
 """

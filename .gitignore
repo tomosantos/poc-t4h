@@ -15,7 +15,7 @@ env/
 
 *.log
 
-# Material de referência pessoal (não versionar)
+# Material de referência pessoal
 example/
 
 # SO / editor
@@ -26,3 +26,4 @@ Thumbs.db
 
 # Scratch do subagent-driven-development
 .superpowers/
+.specs/
