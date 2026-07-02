@@ -140,17 +140,23 @@ class OpenRouterClient:
                            n_chamadas=2)
 
     def hybrid_pass(self, caminho: str, layout: Layout, modelo: str,
-                    max_figuras: int = 3, max_tokens: Optional[int] = None) -> RespostaLLM:
+                    max_figuras: int = 3, max_paginas_texto: int = 15,
+                    max_tokens: Optional[int] = None) -> RespostaLLM:
         """Caminho híbrido pra PDF extenso: PyMuPDF extrai texto+tabelas
         (determinístico, custo zero); o VLM interpreta só as páginas com
         imagem embutida (até max_figuras). O texto combinado é formatado no
-        schema via structured output — sem reenviar o PDF inteiro pro VLM."""
+        schema via structured output — sem reenviar o PDF inteiro pro VLM.
+
+        O texto determinístico é limitado a max_paginas_texto (padrão 15):
+        um PDF de 42 páginas gera ~93KB (~23k tokens) de markdown, o que
+        deixa a chamada final lenta/cara sem ganho proporcional — 15 páginas
+        já cobrem título/resumo/introdução na maioria dos papers."""
         t0 = time.perf_counter()
         n_chamadas = 0
         custos: list[float] = []
         tin_total = tout_total = 0
 
-        md = extrair_markdown(caminho)
+        md = extrair_markdown(caminho, max_paginas=max_paginas_texto)
         for indice in paginas_com_imagem(caminho, max_paginas=max_figuras):
             png = renderizar_pagina(caminho, indice)
             data_url = "data:image/png;base64," + base64.b64encode(png).decode("ascii")
